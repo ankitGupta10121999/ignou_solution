@@ -31,6 +31,6 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}'
-          projectId: 'ignoue-solution-point' # Replace with your Firebase Project ID
-          channelId: 'live' # Deploy to the live channel
-          entryPoint: 'ignou_solution' # Specify the directory where firebase.json is located
+          projectId: 'ignoue-solution-point'
+          channelId: 'live'
+        working-directory: 'ignou_solution' # Set the working directory for this step
