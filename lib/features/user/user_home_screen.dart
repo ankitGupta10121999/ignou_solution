@@ -11,21 +11,19 @@ class UserHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = locator<AuthService>();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Home'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Welcome User!'),
+          ElevatedButton(
             onPressed: () async {
               await authService.signOut();
               context.go('/login');
             },
+            child: const Text('Logout'),
           ),
         ],
-      ),
-      body: const Center(
-        child: Text('Welcome User!'),
       ),
     );
   }

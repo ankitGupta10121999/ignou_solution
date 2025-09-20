@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
+import 'package:ignousolutionhub/auth/signup_screen.dart';
 import 'package:ignousolutionhub/core/locator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -43,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
           _passwordController.text,
         );
         if (mounted) {
-          GoRouter.of(context).go('/');
         }
       } catch (e) {
         setState(() {
@@ -250,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSignUpLink() {
     return TextButton(
       onPressed: () {
-        GoRouter.of(context).go('/signup');
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
       },
       child: const Text.rich(
         TextSpan(

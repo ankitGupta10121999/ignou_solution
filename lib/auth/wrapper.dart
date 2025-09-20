@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
+import 'package:ignousolutionhub/auth/login_screen.dart';
 import 'package:ignousolutionhub/core/firestore_service.dart';
 import 'package:ignousolutionhub/core/locator.dart';
+import 'package:ignousolutionhub/layout/main_app_layout.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
@@ -14,45 +16,32 @@ class Wrapper extends StatelessWidget {
     return StreamBuilder(
       stream: authService.authStateChanges,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          final user = snapshot.data;
-          if (user == null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.go('/login'); // clears all previous routes
-            });
-            return const SizedBox(); // empty placeholder
-          } else {
-            return FutureBuilder(
-              future: firestoreService.getUser(user.uid),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasData) {
-                    final userModel = snapshot.data!;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (userModel.role == 'admin') {
-                        context.go('/all_users');
-                      } else {
-                        context.go('/user_home');
-                      }
-                    });
-                    return const SizedBox();
-                  } else {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      context.go('/login');
-                    });
-                    return const SizedBox();
-                  }
-                } else {
-                  return const Scaffold(
-                    body: Center(child: CircularProgressIndicator()),
-                  );
-                }
-              },
-            );
-          }
-        } else {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final user = snapshot.data;
+        if (user == null) {
+          return const LoginScreen();
+        } else {
+          return FutureBuilder(
+            future: firestoreService.getUser(user.uid),
+            builder: (context, userModelSnapshot) {
+              if (userModelSnapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (userModelSnapshot.hasError ||
+                  userModelSnapshot.data == null ||
+                  userModelSnapshot.data!.role != 'user') {
+                authService.signOut();
+                return const LoginScreen();
+              }
+              return const MainAppLayout();
+            },
           );
         }
       },

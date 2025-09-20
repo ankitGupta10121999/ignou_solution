@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:ignousolutionhub/auth/wrapper.dart'; // Import the wrapper
+import 'package:ignousolutionhub/core/locator.dart'; // Import the locator setup
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:ignousolutionhub/core/firebase_options.dart';
-import 'package:ignousolutionhub/core/locator.dart';
-import 'package:ignousolutionhub/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
-  setupLocator();
+  setupLocator(); // Call setupLocator before running the app
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -25,15 +26,69 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context , child) {
-        return MaterialApp.router(
+        return MaterialApp(
           title: 'IGNOU Solution Hub',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            fontFamily: 'Roboto',
+            primaryColor: const Color(0xFF002147), // Dark Blue
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              secondary: const Color(0xFF28a745), // Green Accent
+              primary: const Color(0xFF002147),
+            ),
+            scaffoldBackgroundColor: Colors.transparent, // Handled by gradient in body
+            appBarTheme: AppBarTheme(
+              backgroundColor: const Color(0xFF002147), // Dark Blue
+              foregroundColor: Colors.white,
+              titleTextStyle: GoogleFonts.roboto(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF002147), // Dark Blue
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                textStyle: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            textTheme: GoogleFonts.robotoTextTheme(
+              Theme.of(context).textTheme,
+            ).apply(
+              bodyColor: Colors.black87,
+              displayColor: Colors.black87,
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: const BorderSide(color: Color(0xFF002147), width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              labelStyle: GoogleFonts.roboto(
+                color: Colors.grey.shade700,
+              ),
+              hintStyle: GoogleFonts.roboto(
+                color: Colors.grey.shade500,
+              ),
+            ),
           ),
-          routerConfig: AppRouter.router,
+          home: const Wrapper(), // Set Wrapper as the home widget
         );
       },
     );
