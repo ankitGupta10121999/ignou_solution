@@ -21,11 +21,9 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        working-directory: 'ignou_solution'
         run: flutter pub get
 
       - name: Build Web
-        working-directory: 'ignou_solution'
         run: flutter build web --release
 
       - name: Deploy to Firebase
