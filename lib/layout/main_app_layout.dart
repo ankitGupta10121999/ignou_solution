@@ -140,7 +140,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'IGNOU SOLUTION HUB',
+                    'IGNOUE SOLUTION HUB',
                     style: GoogleFonts.roboto(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -201,7 +201,7 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IGNOU SOLUTION HUB'),
+        title: const Text('IGNOUE SOLUTION HUB'),
       ),
       body: Row(
         children: [
@@ -242,7 +242,7 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
                     size: 30,
                   )
                 : Text(
-                    'IGNOU SOLUTION HUB',
+                    'IGNOUE SOLUTION HUB',
                     style: GoogleFonts.roboto(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -294,7 +294,7 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IGNOU SOLUTION HUB'),
+        title: const Text('IGNOUE SOLUTION HUB'),
         leading: IconButton(
           icon: Icon(_isSidebarCollapsed ? Icons.menu_open : Icons.menu),
           onPressed: () {
