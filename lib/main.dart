@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context , child) {
         return MaterialApp(
-          title: 'IGNOU Solution Hub',
+          title: 'IGNOUE Solution Hub',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primaryColor: const Color(0xFF002147), // Dark Blue

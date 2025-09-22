@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'WELCOME TO IGNOU SOLUTION HUB',
+                    'WELCOME TO IGNOUE SOLUTION HUB',
                     style: GoogleFonts.roboto(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    'Your one-stop solution for IGNOU study materials.',
+                    'Your one-stop solution for IGNOUE study materials.',
                     style: GoogleFonts.roboto(
                       fontSize: 16,
                       color: Colors.white70,

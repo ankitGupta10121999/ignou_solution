@@ -25,7 +25,7 @@ class SignupWeb extends StatelessWidget {
                   FlutterLogo(size: 150),
                   SizedBox(height: 20),
                   Text(
-                    'IGNOU Solution Hub',
+                    'IGNOUE Solution Hub',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -34,7 +34,7 @@ class SignupWeb extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Your one-stop solution for IGNOU assignments.',
+                    'Your one-stop solution for IGNOUE assignments.',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ],
