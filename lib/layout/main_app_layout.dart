@@ -113,7 +113,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IGNOU SOLUTION HUB'),
+        title: const Text('IGNOUE SOLUTION HUB'),
       ),
       drawer: _buildDrawer(context),
       body: widget.pages[widget.selectedIndex],
@@ -343,7 +343,7 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
                     size: 30,
                   )
                 : Text(
-                    'IGNOU SOLUTION HUB',
+                    'IGNOUE SOLUTION HUB',
                     style: GoogleFonts.roboto(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
