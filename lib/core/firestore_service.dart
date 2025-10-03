@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ignousolutionhub/constants/firebase_collections.dart';
 import 'package:ignousolutionhub/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,7 +9,10 @@ class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> addUser(UserModel user) {
-    return _db.collection('users').doc(user.uid).set(user.toMap());
+    return _db
+        .collection(FirebaseCollections.users)
+        .doc(user.uid)
+        .set(user.toMap());
   }
 
   Future<UserModel?> getUserFromCache(String uid) async {
@@ -26,27 +30,39 @@ class FirestoreService {
   }
 
   Future<UserModel> getUser(String uid) async {
-    // final cachedUser = await getUserFromCache(uid);
-    // if (cachedUser != null) {
-    //   return cachedUser;
-    // }
     final user = await _db
-        .collection('users')
+        .collection(FirebaseCollections.users)
         .doc(uid)
         .get()
         .then((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>));
-    // await saveUserToCache(user);
     return user;
   }
 
   Stream<List<UserModel>> getAllUsers() {
     return _db
-        .collection('users')
+        .collection(FirebaseCollections.users)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
               .map((doc) => UserModel.fromMap(doc.data()))
               .toList(),
         );
+  }
+
+  Future<String?> getUserRole(String uid) async {
+    final user = await _db
+        .collection(FirebaseCollections.users)
+        .doc(uid)
+        .get()
+        .then((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>));
+    return user.role;
+  }
+
+  Future<void> deleteUser(String userId) {
+
+    return _db
+        .collection(FirebaseCollections.users)
+        .doc(userId)
+        .delete();
   }
 }

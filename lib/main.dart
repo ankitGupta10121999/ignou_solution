@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ignousolutionhub/auth/auth_service.dart';
 import 'package:ignousolutionhub/auth/wrapper.dart'; // Import the wrapper
 import 'package:ignousolutionhub/core/locator.dart'; // Import the locator setup
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +13,7 @@ void main() async {
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform
   );
+  await AuthService().setPersistence();
   setupLocator(); // Call setupLocator before running the app
   runApp(const ProviderScope(child: MyApp()));
 }

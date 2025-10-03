@@ -1,10 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
+import 'package:ignousolutionhub/auth/wrapper.dart';
 import 'package:ignousolutionhub/core/firestore_service.dart';
 import 'package:ignousolutionhub/core/locator.dart';
-import 'package:ignousolutionhub/models/user_model.dart';
 
 import 'login_screen.dart';
 
@@ -57,9 +57,13 @@ class _SignupScreenState extends State<SignupScreen> {
             _errorMessage = 'Signup failed. Please try again.';
           });
         }
-      } catch (e) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const Wrapper()),
+        );
+      } on FirebaseAuthException catch (e) {
         setState(() {
-          _errorMessage = e.toString();
+          _errorMessage = e.message;
         });
       } finally {
         setState(() {

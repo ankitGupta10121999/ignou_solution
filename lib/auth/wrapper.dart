@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
 import 'package:ignousolutionhub/auth/login_screen.dart';
+import 'package:ignousolutionhub/constants/role_constants.dart';
 import 'package:ignousolutionhub/core/firestore_service.dart';
 import 'package:ignousolutionhub/core/locator.dart';
 import 'package:ignousolutionhub/layout/main_app_layout.dart';
+
+import '../layout/admin_app_layout.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
@@ -35,12 +37,16 @@ class Wrapper extends StatelessWidget {
                 );
               }
               if (userModelSnapshot.hasError ||
-                  userModelSnapshot.data == null ||
-                  userModelSnapshot.data!.role != 'user') {
+                  userModelSnapshot.data == null) {
                 authService.signOut();
                 return const LoginScreen();
               }
-              return const MainAppLayout();
+              final role = userModelSnapshot.data?.role;
+              if (role == RoleConstants.student) {
+                return const StudentAppLayout();
+              } else {
+                return const AdminAppLayout();
+              }
             },
           );
         }

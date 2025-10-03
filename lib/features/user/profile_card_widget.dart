@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ignousolutionhub/features/user/profile_page.dart';
 
+import '../../constants/firebase_collections.dart';
+
 class ProfileCardWidget extends StatefulWidget {
   const ProfileCardWidget({Key? key}) : super(key: key);
 
@@ -23,7 +25,10 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
 
   Future<void> _fetchFirestoreUserData() async {
     if (_user != null) {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(_user!.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection(FirebaseCollections.users)
+          .doc(_user!.uid)
+          .get();
       if (doc.exists) {
         setState(() {
           _firestoreUserData = doc.data();
@@ -47,7 +52,8 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       return const SizedBox.shrink(); // Or a placeholder for logged-out users
     }
 
-    final String? displayName = _user!.displayName ?? _firestoreUserData?['name'];
+    final String? displayName =
+        _user!.displayName ?? _firestoreUserData?['name'];
     final String? email = _user!.email;
     final String? photoURL = _user!.photoURL ?? _firestoreUserData?['photoURL'];
 
@@ -55,9 +61,9 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
       margin: const EdgeInsets.all(16.0),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const ProfilePage()),
-          );
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (context) => const ProfilePage()));
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -65,11 +71,16 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             children: [
               CircleAvatar(
                 radius: 24,
-                backgroundImage: photoURL != null ? NetworkImage(photoURL) : null,
+                backgroundImage: photoURL != null
+                    ? NetworkImage(photoURL)
+                    : null,
                 child: photoURL == null
                     ? Text(
                         _getInitials(displayName, email),
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
                       )
                     : null,
               ),
@@ -88,6 +99,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       email ?? 'No Email',
                       style: Theme.of(context).textTheme.bodySmall,
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ],
                 ),

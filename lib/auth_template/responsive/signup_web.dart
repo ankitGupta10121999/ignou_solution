@@ -1,16 +1,17 @@
-
 import 'package:flutter/material.dart';
 import 'package:ignousolutionhub/auth_template/auth_form.dart';
 
-class SignupWeb extends StatelessWidget {
+class SignupWeb extends StatefulWidget {
   const SignupWeb({super.key, required this.submitAuthForm});
 
-  final void Function(
-    String email,
-    String password,
-    bool isLogin,
-  ) submitAuthForm;
+  final void Function(String email, String password, bool isLogin)
+  submitAuthForm;
 
+  @override
+  State<SignupWeb> createState() => _SignupWebState();
+}
+
+class _SignupWebState extends State<SignupWeb> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +49,7 @@ class SignupWeb extends StatelessWidget {
                   padding: const EdgeInsets.all(32.0),
                   child: AuthForm(
                     isLogin: false,
-                    onSubmit: submitAuthForm,
+                    onSubmit: widget.submitAuthForm,
                   ),
                 ),
               ),

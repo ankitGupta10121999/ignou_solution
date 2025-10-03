@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ignousolutionhub/features/user/books_page.dart';
-import 'package:ignousolutionhub/features/user/contact_page.dart';
-import 'package:ignousolutionhub/features/user/home_page.dart';
-import 'package:ignousolutionhub/features/user/profile_card_widget.dart'; // Import the new widget
-import 'package:ignousolutionhub/features/user/question_papers_page.dart';
-import 'package:ignousolutionhub/features/user/solved_assignments_page.dart';
-import 'package:ignousolutionhub/features/user/study_material_page.dart';
-import 'package:ignousolutionhub/responsive/responsive_layout.dart';
 
-class StudentAppLayout extends StatefulWidget {
-  const StudentAppLayout({super.key});
+import '../features/admin/user_page.dart';
+import '../features/user/profile_card_widget.dart';
+import '../responsive/responsive_layout.dart';
+
+class AdminAppLayout extends StatefulWidget {
+  const AdminAppLayout({super.key});
 
   @override
-  State<StudentAppLayout> createState() => _StudentAppLayoutState();
+  State<AdminAppLayout> createState() => _AdminAppLayoutState();
 }
 
-class _StudentAppLayoutState extends State<StudentAppLayout> {
+class _AdminAppLayoutState extends State<AdminAppLayout> {
   int _selectedIndex = 0;
-  bool _isSidebarCollapsed = false;
 
   final List<Widget> _pages = [
-    const HomePage(),
-    const StudyMaterialPage(),
-    // const BooksPage(),
-    const SolvedAssignmentsPage(),
-    // const QuestionPapersPage(),
-    const ContactPage(),
+    UsersPage()
   ];
 
   void _onItemSelected(int index) {
@@ -96,7 +86,9 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
         child: Column(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              decoration: BoxDecoration(color: Theme
+                  .of(context)
+                  .primaryColor),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -119,17 +111,18 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
                 ],
               ),
             ),
-            _buildDrawerItem(context, Icons.home, 'Home', 0),
-            _buildDrawerItem(context, Icons.book, 'Hand Written Assignments', 1),
+            _buildDrawerItem(context, Icons.group, 'Users', 0),
+            // _buildDrawerItem(
+            //     context, Icons.book, 'Hand Written Assignments', 1),
             // _buildDrawerItem(context, Icons.library_books, 'Books', 2),
-            _buildDrawerItem(
-              context,
-              Icons.assignment,
-              'Solved Assignments',
-              2,
-            ),
-            // _buildDrawerItem(context, Icons.description, 'Question Papers', 4),
-            _buildDrawerItem(context, Icons.contact_mail, 'Contact Us', 3),
+            // _buildDrawerItem(
+            //   context,
+            //   Icons.assignment,
+            //   'Solved Assignments',
+            //   2,
+            // ),
+            // // _buildDrawerItem(context, Icons.description, 'Question Papers', 4),
+            // _buildDrawerItem(context, Icons.contact_mail, 'Contact Us', 3),
             const Spacer(),
             const ProfileCardWidget(), // Use the new ProfileCardWidget
           ],
@@ -138,12 +131,10 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
     );
   }
 
-  Widget _buildDrawerItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    int index,
-  ) {
+  Widget _buildDrawerItem(BuildContext context,
+      IconData icon,
+      String title,
+      int index,) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -208,17 +199,19 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
               style: GoogleFonts.roboto(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
               ),
             ),
           ),
           const Divider(),
-          _buildSidebarItem(context, Icons.home, 'Home', 0),
-          _buildSidebarItem(context, Icons.book, 'Hand Written Assignments', 1),
+          _buildSidebarItem(context, Icons.group, 'Users', 0),
+          // _buildSidebarItem(context, Icons.book, 'Hand Written Assignments', 1),
           // _buildSidebarItem(context, Icons.library_books, 'Books', 2),
-          _buildSidebarItem(context, Icons.assignment, 'Solved Assignments', 2),
+          // _buildSidebarItem(context, Icons.assignment, 'Solved Assignments', 2),
           // _buildSidebarItem(context, Icons.description, 'Question Papers', 4),
-          _buildSidebarItem(context, Icons.contact_mail, 'Contact Us', 3),
+          // _buildSidebarItem(context, Icons.contact_mail, 'Contact Us', 3),
           const Spacer(),
           const ProfileCardWidget(), // Use the new ProfileCardWidget
         ],
@@ -226,12 +219,10 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
     );
   }
 
-  Widget _buildSidebarItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    int index,
-  ) {
+  Widget _buildSidebarItem(BuildContext context,
+      IconData icon,
+      String title,
+      int index,) {
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
@@ -305,28 +296,32 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
             padding: const EdgeInsets.all(16.0),
             child: isCollapsed
                 ? Icon(
-                    Icons.school,
-                    color: Theme.of(context).primaryColor,
-                    size: 30,
-                  )
+              Icons.school,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+              size: 30,
+            )
                 : Text(
-                    'IGNOUE SOLUTION HUB',
-                    style: GoogleFonts.roboto(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+              'IGNOUE SOLUTION HUB',
+              style: GoogleFonts.roboto(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme
+                    .of(context)
+                    .primaryColor,
+              ),
+            ),
           ),
           const Divider(),
-          _buildSidebarItem(context, Icons.home, 'Home', 0, isCollapsed),
-          _buildSidebarItem(
-            context,
-            Icons.book,
-            'Hand Written Assignments',
-            1,
-            isCollapsed,
-          ),
+          _buildSidebarItem(context, Icons.group, 'Users', 0, isCollapsed),
+          // _buildSidebarItem(
+          //   context,
+          //   Icons.book,
+          //   'Hand Written Assignments',
+          //   1,
+          //   isCollapsed,
+          // ),
           // _buildSidebarItem(
           //   context,
           //   Icons.library_books,
@@ -334,13 +329,13 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           //   2,
           //   isCollapsed,
           // ),
-          _buildSidebarItem(
-            context,
-            Icons.assignment,
-            'Solved Assignments',
-            2,
-            isCollapsed,
-          ),
+          // _buildSidebarItem(
+          //   context,
+          //   Icons.assignment,
+          //   'Solved Assignments',
+          //   2,
+          //   isCollapsed,
+          // ),
           // _buildSidebarItem(
           //   context,
           //   Icons.description,
@@ -348,13 +343,13 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           //   4,
           //   isCollapsed,
           // ),
-          _buildSidebarItem(
-            context,
-            Icons.contact_mail,
-            'Contact Us',
-            3,
-            isCollapsed,
-          ),
+          // _buildSidebarItem(
+          //   context,
+          //   Icons.contact_mail,
+          //   'Contact Us',
+          //   3,
+          //   isCollapsed,
+          // ),
           const Spacer(),
           const ProfileCardWidget(), // Use the new ProfileCardWidget
         ],
@@ -362,13 +357,11 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
     );
   }
 
-  Widget _buildSidebarItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    int index,
-    bool isCollapsed,
-  ) {
+  Widget _buildSidebarItem(BuildContext context,
+      IconData icon,
+      String title,
+      int index,
+      bool isCollapsed,) {
     return ListTile(
       leading: Icon(icon),
       title: isCollapsed ? null : Text(title),
@@ -379,3 +372,4 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
     );
   }
 }
+

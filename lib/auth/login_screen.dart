@@ -1,8 +1,5 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
 import 'package:ignousolutionhub/auth/signup_screen.dart';
 import 'package:ignousolutionhub/core/locator.dart';
@@ -43,11 +40,11 @@ class _LoginScreenState extends State<LoginScreen> {
           _emailController.text,
           _passwordController.text,
         );
-        if (mounted) {
-        }
+        if (mounted) {}
       } catch (e) {
+        print(e);
         setState(() {
-          _errorMessage = e.toString();
+          _errorMessage = "Invalid email or password";
         });
       } finally {
         setState(() {
@@ -88,9 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLoginCard() {
     return Card(
       elevation: 8.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       child: Padding(
         padding: EdgeInsets.all(24.w),
         child: AutofillGroup(
@@ -109,21 +104,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 24.h),
-                if (_errorMessage != null)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(color: Colors.red, fontSize: 14.sp),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                 _buildEmailField(),
                 SizedBox(height: 16.h),
                 _buildPasswordField(),
                 SizedBox(height: 8.h),
                 _buildForgotPasswordLink(),
                 SizedBox(height: 24.h),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red, fontSize: 22),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 _buildLoginButton(),
                 SizedBox(height: 16.h),
                 _buildSignUpLink(),
@@ -144,9 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         labelText: 'Email',
         prefixIcon: const Icon(Icons.email_outlined),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
@@ -171,13 +164,9 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         labelText: 'Password',
         prefixIcon: const Icon(Icons.lock_outline),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.r),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
         suffixIcon: IconButton(
-          icon: Icon(
-            _obscureText ? Icons.visibility_off : Icons.visibility,
-          ),
+          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
           onPressed: () {
             setState(() {
               _obscureText = !_obscureText;
@@ -201,14 +190,14 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           // TODO: Implement forgot password functionality
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Forgot password functionality coming soon!')),
+            const SnackBar(
+              content: Text('Forgot password functionality coming soon!'),
+            ),
           );
         },
         child: const Text(
           'Forgot password?',
-          style: TextStyle(
-            color: Color(0xFF28A745),
-          ),
+          style: TextStyle(color: Color(0xFF28A745)),
         ),
       ),
     );
@@ -250,14 +239,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSignUpLink() {
     return TextButton(
       onPressed: () {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const SignupScreen()));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SignupScreen()),
+        );
       },
       child: const Text.rich(
         TextSpan(
           text: 'Don\'t have an account? ',
-          style: TextStyle(
-            color: Colors.black,
-          ),
+          style: TextStyle(color: Colors.black),
           children: [
             TextSpan(
               text: 'Sign Up',
