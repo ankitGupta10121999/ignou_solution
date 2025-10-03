@@ -1,5 +1,8 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../auth/wrapper.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({
@@ -25,6 +28,7 @@ class _AuthFormState extends State<AuthForm> {
   var _email = '';
   var _password = '';
   var _obscurePassword = true;
+  String? _errorMessage;
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
@@ -35,11 +39,23 @@ class _AuthFormState extends State<AuthForm> {
       setState(() {
         _isLoading = true;
       });
-      widget.onSubmit(
-        _email.trim(),
-        _password.trim(),
-        widget.isLogin,
-      );
+      try  {
+       widget.onSubmit(
+          _email.trim(),
+          _password.trim(),
+          widget.isLogin,
+        );
+      } on FirebaseAuthException catch (e){
+        setState(() {
+          print(_errorMessage);
+          print(e.message);
+          _errorMessage = e.message;
+        });
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -105,6 +121,15 @@ class _AuthFormState extends State<AuthForm> {
           if (_isLoading)
             const CircularProgressIndicator()
           else
+            if (_errorMessage != null)
+              Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red, fontSize: 22),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ElevatedButton(
               onPressed: _trySubmit,
               style: ElevatedButton.styleFrom(

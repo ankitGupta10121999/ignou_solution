@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:ignousolutionhub/auth_template/auth_form.dart';
 import 'package:ignousolutionhub/auth_template/responsive/signup_mobile.dart';
@@ -6,13 +5,21 @@ import 'package:ignousolutionhub/auth_template/responsive/signup_tablet.dart';
 import 'package:ignousolutionhub/auth_template/responsive/signup_web.dart';
 import 'package:ignousolutionhub/responsive/responsive_layout.dart';
 
-class SignupScreenTemplate extends StatelessWidget {
+import '../auth/auth_service.dart';
+import '../core/locator.dart';
+
+class SignupScreenTemplate extends StatefulWidget {
   const SignupScreenTemplate({super.key});
 
-  void _submitAuthForm(String email, String password, bool isLogin) {
-    // Implement your signup logic here
-    print('Email: $email');
-    print('Password: $password');
+  @override
+  State<SignupScreenTemplate> createState() => _SignupScreenTemplateState();
+}
+
+class _SignupScreenTemplateState extends State<SignupScreenTemplate> {
+  final AuthService _authService = locator<AuthService>();
+
+  void _submitAuthForm(String email, String password, bool isLogin) async {
+    await _authService.signInWithEmailAndPassword(email, password);
   }
 
   @override

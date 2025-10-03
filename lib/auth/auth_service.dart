@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ignousolutionhub/constants/firebase_collections.dart';
+import 'package:ignousolutionhub/constants/role_constants.dart';
 import 'package:ignousolutionhub/models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> setPersistence() async {
+    await _auth.setPersistence(Persistence.SESSION);
+  }
 
   Future<UserCredential?> signUpWithEmailAndPassword(
     String email,
@@ -17,17 +23,17 @@ class AuthService {
         UserModel userModel = UserModel(
           uid: user.uid,
           email: user.email!,
-          role: 'user',
+          role: RoleConstants.student,
         );
         await FirebaseFirestore.instance
-            .collection('users')
+            .collection(FirebaseCollections.users)
             .doc(user.uid)
             .set(userModel.toMap());
       }
       return userCredential;
     } on FirebaseAuthException catch (e) {
       print(e.message);
-      return null;
+      rethrow;
     }
   }
 
@@ -42,7 +48,7 @@ class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       print(e.message);
-      return null;
+      rethrow;
     }
   }
 
@@ -52,6 +58,10 @@ class AuthService {
 
   User? getCurrentUser() {
     return _auth.currentUser;
+  }
+
+  Future<void> _deleteUser() async {
+
   }
 
   Stream<User?> get authStateChanges => _auth.authStateChanges();
