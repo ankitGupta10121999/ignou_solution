@@ -6,7 +6,9 @@ import 'package:ignousolutionhub/features/user/profile_page.dart';
 import '../../constants/firebase_collections.dart';
 
 class ProfileCardWidget extends StatefulWidget {
-  const ProfileCardWidget({Key? key}) : super(key: key);
+  final bool isCollapsed;
+
+  const ProfileCardWidget({super.key, this.isCollapsed = false});
 
   @override
   State<ProfileCardWidget> createState() => _ProfileCardWidgetState();
@@ -49,7 +51,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
   @override
   Widget build(BuildContext context) {
     if (_user == null) {
-      return const SizedBox.shrink(); // Or a placeholder for logged-out users
+      return const SizedBox.shrink();
     }
 
     final String? displayName =
@@ -58,15 +60,14 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     final String? photoURL = _user!.photoURL ?? _firestoreUserData?['photoURL'];
 
     return Card(
-      margin: const EdgeInsets.all(16.0),
       child: InkWell(
         onTap: () {
           Navigator.of(
             context,
-          ).push(MaterialPageRoute(builder: (context) => const ProfilePage()));
+          ).push(MaterialPageRoute(builder: (context) => ProfilePage()));
         },
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(widget.isCollapsed ? 4.0 : 12.0),
           child: Row(
             children: [
               CircleAvatar(
@@ -84,8 +85,8 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                       )
                     : null,
               ),
-              const SizedBox(width: 16),
-              Expanded(
+              !widget.isCollapsed ? SizedBox(width: 16) : Container(),
+              !widget.isCollapsed ? Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -103,7 +104,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
                     ),
                   ],
                 ),
-              ),
+              ) : Container(),
             ],
           ),
         ),

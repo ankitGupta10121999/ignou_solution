@@ -139,11 +139,6 @@ class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("User Management"),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
-      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addUserDialog,
         icon: const Icon(Icons.add),

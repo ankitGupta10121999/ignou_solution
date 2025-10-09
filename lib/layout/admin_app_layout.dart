@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../features/admin/courses_page.dart';
+import '../features/admin/subjects_page.dart';
 import '../features/admin/user_page.dart';
 import '../features/user/profile_card_widget.dart';
 import '../responsive/responsive_layout.dart';
@@ -15,9 +17,7 @@ class AdminAppLayout extends StatefulWidget {
 class _AdminAppLayoutState extends State<AdminAppLayout> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    UsersPage()
-  ];
+  final List<Widget> _pages = [UsersPage(), CoursesPage(), SubjectsPage()];
 
   void _onItemSelected(int index) {
     setState(() {
@@ -86,9 +86,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
         child: Column(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Theme
-                  .of(context)
-                  .primaryColor),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -112,17 +110,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
               ),
             ),
             _buildDrawerItem(context, Icons.group, 'Users', 0),
-            // _buildDrawerItem(
-            //     context, Icons.book, 'Hand Written Assignments', 1),
-            // _buildDrawerItem(context, Icons.library_books, 'Books', 2),
-            // _buildDrawerItem(
-            //   context,
-            //   Icons.assignment,
-            //   'Solved Assignments',
-            //   2,
-            // ),
-            // // _buildDrawerItem(context, Icons.description, 'Question Papers', 4),
-            // _buildDrawerItem(context, Icons.contact_mail, 'Contact Us', 3),
+            _buildDrawerItem(context, Icons.school, 'Courses', 1),
             const Spacer(),
             const ProfileCardWidget(), // Use the new ProfileCardWidget
           ],
@@ -131,17 +119,64 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
     );
   }
 
-  Widget _buildDrawerItem(BuildContext context,
-      IconData icon,
-      String title,
-      int index,) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      selected: widget.selectedIndex == index,
-      onTap: () {
-        widget.onItemSelected(index);
-        Navigator.pop(context); // Close drawer
+  // Widget _buildDrawerItem(BuildContext context,
+  //     IconData icon,
+  //     String title,
+  //     int index,) {
+  //   return ListTile(
+  //     leading: Icon(icon),
+  //     title: Text(title),
+  //     selected: widget.selectedIndex == index,
+  //     onTap: () {
+  //       widget.onItemSelected(index);
+  //       Navigator.pop(context); // Close drawer
+  //     },
+  //   );
+  // }
+
+  Widget _buildDrawerItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    int index,
+  ) {
+    bool isSelected = widget.selectedIndex == index;
+    bool isHovered = false;
+
+    return StatefulBuilder(
+      builder: (context, setInnerState) {
+        return MouseRegion(
+          onEnter: (_) => setInnerState(() => isHovered = true),
+          onExit: (_) => setInnerState(() => isHovered = false),
+          child: Container(
+            color: isSelected
+                ? Colors.green.shade100
+                : isHovered
+                ? Colors.grey.shade200
+                : Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                icon,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.black87,
+              ),
+              title: Text(
+                title,
+                style: TextStyle(
+                  color: isSelected
+                      ? Theme.of(context).primaryColor
+                      : Colors.black87,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              onTap: () {
+                widget.onItemSelected(index);
+                Navigator.pop(context); // close drawer
+              },
+            ),
+          ),
+        );
       },
     );
   }
@@ -199,42 +234,86 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
               style: GoogleFonts.roboto(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Theme
-                    .of(context)
-                    .primaryColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ),
           const Divider(),
           _buildSidebarItem(context, Icons.group, 'Users', 0),
-          // _buildSidebarItem(context, Icons.book, 'Hand Written Assignments', 1),
-          // _buildSidebarItem(context, Icons.library_books, 'Books', 2),
-          // _buildSidebarItem(context, Icons.assignment, 'Solved Assignments', 2),
-          // _buildSidebarItem(context, Icons.description, 'Question Papers', 4),
-          // _buildSidebarItem(context, Icons.contact_mail, 'Contact Us', 3),
+          _buildSidebarItem(context, Icons.school, 'Courses', 1),
+          _buildSidebarItem(context, Icons.menu_book, 'Subjects', 2),
           const Spacer(),
-          const ProfileCardWidget(), // Use the new ProfileCardWidget
+          const ProfileCardWidget(),
         ],
       ),
     );
   }
 
-  Widget _buildSidebarItem(BuildContext context,
-      IconData icon,
-      String title,
-      int index,) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      selected: widget.selectedIndex == index,
-      onTap: () {
-        widget.onItemSelected(index);
+  // Widget _buildSidebarItem(BuildContext context,
+  //     IconData icon,
+  //     String title,
+  //     int index,) {
+  //   return ListTile(
+  //     leading: Icon(icon),
+  //     title: Text(title),
+  //     selected: widget.selectedIndex == index,
+  //     onTap: () {
+  //       widget.onItemSelected(index);
+  //     },
+  //   );
+  // }
+  Widget _buildSidebarItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    int index, [
+    bool isCollapsed = false,
+  ]) {
+    bool isSelected = widget.selectedIndex == index;
+    bool isHovered = false;
+    return StatefulBuilder(
+      builder: (context, setInnerState) {
+        return MouseRegion(
+          onEnter: (_) => setInnerState(() => isHovered = true),
+          onExit: (_) => setInnerState(() => isHovered = false),
+          child: Container(
+            color: isSelected
+                ? Colors.green.shade100
+                : isHovered
+                ? Colors.grey.shade200
+                : Colors.transparent,
+            child: ListTile(
+              leading: Icon(
+                icon,
+                color: isSelected
+                    ? Theme.of(context).primaryColor
+                    : Colors.black87,
+              ),
+              title: isCollapsed
+                  ? null
+                  : Text(
+                      title,
+                      style: TextStyle(
+                        color: isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.black87,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+              selected: isSelected,
+              onTap: () {
+                widget.onItemSelected(index);
+              },
+            ),
+          ),
+        );
       },
     );
   }
 }
 
-// Desktop Scaffold with fixed sidebar
 class _DesktopScaffold extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onItemSelected;
@@ -252,6 +331,8 @@ class _DesktopScaffold extends StatefulWidget {
 
 class _DesktopScaffoldState extends State<_DesktopScaffold> {
   bool _isSidebarCollapsed = false;
+  int _hoveredIndex = -1;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -270,7 +351,6 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
       body: Row(
         children: [
           _buildSidebar(context, isCollapsed: _isSidebarCollapsed),
-          // Fixed sidebar
           Expanded(child: widget.pages[widget.selectedIndex]),
         ],
       ),
@@ -296,80 +376,96 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
             padding: const EdgeInsets.all(16.0),
             child: isCollapsed
                 ? Icon(
-              Icons.school,
-              color: Theme
-                  .of(context)
-                  .primaryColor,
-              size: 30,
-            )
+                    Icons.school,
+                    color: Theme.of(context).primaryColor,
+                    size: 30,
+                  )
                 : Text(
-              'IGNOUE SOLUTION HUB',
-              style: GoogleFonts.roboto(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme
-                    .of(context)
-                    .primaryColor,
-              ),
-            ),
+                    'IGNOUE SOLUTION HUB',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
           ),
           const Divider(),
           _buildSidebarItem(context, Icons.group, 'Users', 0, isCollapsed),
-          // _buildSidebarItem(
-          //   context,
-          //   Icons.book,
-          //   'Hand Written Assignments',
-          //   1,
-          //   isCollapsed,
-          // ),
-          // _buildSidebarItem(
-          //   context,
-          //   Icons.library_books,
-          //   'Books',
-          //   2,
-          //   isCollapsed,
-          // ),
-          // _buildSidebarItem(
-          //   context,
-          //   Icons.assignment,
-          //   'Solved Assignments',
-          //   2,
-          //   isCollapsed,
-          // ),
-          // _buildSidebarItem(
-          //   context,
-          //   Icons.description,
-          //   'Question Papers',
-          //   4,
-          //   isCollapsed,
-          // ),
-          // _buildSidebarItem(
-          //   context,
-          //   Icons.contact_mail,
-          //   'Contact Us',
-          //   3,
-          //   isCollapsed,
-          // ),
+          _buildSidebarItem(context, Icons.school, 'Courses', 1, isCollapsed),
+          _buildSidebarItem(
+            context,
+            Icons.menu_book,
+            'Subjects',
+            2,
+            isCollapsed,
+          ),
           const Spacer(),
-          const ProfileCardWidget(), // Use the new ProfileCardWidget
+          ProfileCardWidget(isCollapsed: _isSidebarCollapsed),
         ],
       ),
     );
   }
 
-  Widget _buildSidebarItem(BuildContext context,
-      IconData icon,
-      String title,
-      int index,
-      bool isCollapsed,) {
-    return ListTile(
-      leading: Icon(icon),
-      title: isCollapsed ? null : Text(title),
-      selected: widget.selectedIndex == index,
-      onTap: () {
-        widget.onItemSelected(index);
-      },
+  Widget _buildSidebarItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    int index,
+    bool isCollapsed,
+  ) {
+    bool isSelected = _selectedIndex == index;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hoveredIndex = index),
+      onExit: (_) => setState(() => _hoveredIndex = -1),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+              : (_hoveredIndex == index
+                    ? Theme.of(context).primaryColor.withOpacity(0.08)
+                    : Colors.transparent),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          minLeadingWidth: 24,
+          leading: Icon(
+            icon,
+            size: 22,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : (_hoveredIndex == index
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey.shade700),
+          ),
+          title: isCollapsed
+              ? null
+              : Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : (_hoveredIndex == index
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey.shade700),
+                  fontWeight: isSelected
+                      ? FontWeight.w600
+                      : FontWeight.w400,
+                ),
+              ),
+          onTap: () {
+            setState(() {
+              _selectedIndex = index;
+            });
+            widget.onItemSelected(index);
+          },
+        ),
+      ),
     );
   }
 }
-
