@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ignousolutionhub/features/user/profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ignousolutionhub/routing/app_router.dart';
 
 import '../../constants/firebase_collections.dart';
 
@@ -62,9 +63,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     return Card(
       child: InkWell(
         onTap: () {
-          Navigator.of(
-            context,
-          ).push(MaterialPageRoute(builder: (context) => ProfilePage()));
+          GoRouter.of(context).go(AppRouter.profile);
         },
         child: Padding(
           padding: EdgeInsets.all(widget.isCollapsed ? 4.0 : 12.0),
@@ -72,6 +71,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
             children: [
               CircleAvatar(
                 radius: 24,
+                backgroundColor: Theme.of(context).primaryColor,
                 backgroundImage: photoURL != null
                     ? NetworkImage(photoURL)
                     : null,

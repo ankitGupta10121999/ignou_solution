@@ -2,8 +2,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../auth/wrapper.dart';
-
 class AuthForm extends StatefulWidget {
   const AuthForm({
     super.key,

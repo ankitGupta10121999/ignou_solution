@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ignousolutionhub/auth/auth_service.dart';
-import 'package:ignousolutionhub/auth/signup_screen.dart';
-import 'package:ignousolutionhub/core/locator.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ignousolutionhub/auth/login_controller.dart';
+import 'package:ignousolutionhub/routing/app_router.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  final AuthService _authService = locator<AuthService>();
 
   @override
   void dispose() {
@@ -30,32 +27,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      try {
-        await _authService.signInWithEmailAndPassword(
-          _emailController.text,
-          _passwordController.text,
-        );
-        if (mounted) {}
-      } catch (e) {
-        print(e);
-        setState(() {
-          _errorMessage = "Invalid email or password";
-        });
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      // Call the signIn method on our controller
+      await ref
+          .read(loginControllerProvider.notifier)
+          .signIn(_emailController.text, _passwordController.text);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Listen for errors and show a SnackBar
+    ref.listen<LoginState>(loginControllerProvider, (previous, next) {
+      if (next.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error!),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
+
+    // Watch the provider for state changes
+    final loginState = ref.watch(loginControllerProvider);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -71,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildLoginCard(),
+                _buildLoginCard(loginState.isLoading),
                 SizedBox(height: 40.h),
                 _buildFooter(),
               ],
@@ -82,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginCard() {
+  Widget _buildLoginCard(bool isLoading) {
     return Card(
       elevation: 8.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
@@ -110,16 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 8.h),
                 _buildForgotPasswordLink(),
                 SizedBox(height: 24.h),
-                if (_errorMessage != null)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(color: Colors.red, fontSize: 22),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                _buildLoginButton(),
+                _buildLoginButton(isLoading),
                 SizedBox(height: 16.h),
                 _buildSignUpLink(),
               ],
@@ -188,7 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () {
-          // TODO: Implement forgot password functionality
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Forgot password functionality coming soon!'),
@@ -203,11 +188,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(bool isLoading) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _isLoading ? null : _login,
+        onPressed: isLoading ? null : _login,
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF002147),
           padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -215,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
             borderRadius: BorderRadius.circular(8.r),
           ),
         ),
-        child: _isLoading
+        child: isLoading
             ? SizedBox(
                 height: 20.h,
                 width: 20.h,
@@ -239,10 +224,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSignUpLink() {
     return TextButton(
       onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SignupScreen()),
-        );
+        // Use go_router for navigation
+        context.go(AppRouter.signup);
       },
       child: const Text.rich(
         TextSpan(
