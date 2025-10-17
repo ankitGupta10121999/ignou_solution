@@ -6,25 +6,28 @@ class SolvedAssignmentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'SOLVED ASSIGNMENTS',
-            style: GoogleFonts.roboto(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+    return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'SOLVED ASSIGNMENTS',
+              style: GoogleFonts.roboto(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          _buildAssignmentGroup(context, 'Subject A', '2023'),
-          _buildAssignmentGroup(context, 'Subject A', '2022'),
-          _buildAssignmentGroup(context, 'Subject B', '2023'),
-          _buildAssignmentGroup(context, 'Subject C', '2021'),
-        ],
+            const SizedBox(height: 20),
+            _buildAssignmentGroup(context, 'Subject A', '2023'),
+            _buildAssignmentGroup(context, 'Subject A', '2022'),
+            _buildAssignmentGroup(context, 'Subject B', '2023'),
+            _buildAssignmentGroup(context, 'Subject C', '2021'),
+          ],
+        ),
       ),
     );
   }

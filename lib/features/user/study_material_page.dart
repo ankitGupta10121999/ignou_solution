@@ -29,7 +29,8 @@ class StudyMaterialPage extends StatelessWidget {
               mainAxisSpacing: 16.0,
               childAspectRatio: 3 / 2,
             ),
-            itemCount: 10, // Placeholder for 10 subjects
+            itemCount: 10,
+            // Placeholder for 10 subjects
             itemBuilder: (context, index) {
               return _buildSubjectCard(context, 'Subject ${index + 1}');
             },
@@ -42,15 +43,13 @@ class StudyMaterialPage extends StatelessWidget {
   Widget _buildSubjectCard(BuildContext context, String subjectName) {
     return Card(
       elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: InkWell(
         onTap: () {
           // Handle subject tap
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Tapped on $subjectName')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Tapped on $subjectName')));
         },
         borderRadius: BorderRadius.circular(10.0),
         child: Padding(
@@ -58,7 +57,11 @@ class StudyMaterialPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.folder_open, size: 40, color: Theme.of(context).colorScheme.secondary),
+              Icon(
+                Icons.folder_open,
+                size: 40,
+                color: Theme.of(context).primaryColor,
+              ),
               const SizedBox(height: 10),
               Text(
                 subjectName,

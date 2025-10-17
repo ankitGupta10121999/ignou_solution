@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
-import 'package:ignousolutionhub/auth/wrapper.dart';
 import 'package:ignousolutionhub/core/firestore_service.dart';
 import 'package:ignousolutionhub/core/locator.dart';
 
+import '../routing/app_router.dart';
 import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -49,18 +50,17 @@ class _SignupScreenState extends State<SignupScreen> {
           _emailController.text,
           _passwordController.text,
         );
-          if (mounted) {
-            // No explicit navigation needed, Wrapper will react to auth state changes
-          }
-         else {
+        if (mounted) {
+          // No explicit navigation needed, Wrapper will react to auth state changes
+        } else {
           setState(() {
             _errorMessage = 'Signup failed. Please try again.';
           });
         }
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const Wrapper()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (_) => const Wrapper()),
+        // );
       } on FirebaseAuthException catch (e) {
         setState(() {
           _errorMessage = e.message;
@@ -167,7 +167,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                             ),
                             onPressed: () {
                               setState(() {
@@ -198,11 +200,14 @@ class _SignupScreenState extends State<SignupScreen> {
                           prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                              _obscureConfirmPassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                             ),
                             onPressed: () {
                               setState(() {
-                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                                _obscureConfirmPassword =
+                                    !_obscureConfirmPassword;
                               });
                             },
                           ),
@@ -230,7 +235,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             backgroundColor: const Color(0xFF002147),
                           ),
                           child: _isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
                               : Text(
                                   'SIGN UP',
                                   style: GoogleFonts.roboto(
@@ -244,7 +251,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 20),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                          GoRouter.of(context).go(AppRouter.login);
                         },
                         child: Text(
                           'Already have an account? Login',

@@ -84,19 +84,23 @@ class _CoursesPageState extends State<CoursesPage> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     final docs = snapshot.data!.docs;
-
                     return GridView.builder(
                       padding: const EdgeInsets.all(16),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: isWide ? 3 : 1,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 380, // Each card’s max width
+                        mainAxisExtent: 100,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
                         childAspectRatio: 3,
                       ),
                       itemCount: docs.length,
                       itemBuilder: (context, index) {
                         final doc = docs[index];
                         return Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           child: ListTile(
                             title: Text(doc['name']),
                             subtitle: Text(
@@ -118,7 +122,6 @@ class _CoursesPageState extends State<CoursesPage> {
                                     );
                                   },
                                 ),
-
                                 IconButton(
                                   icon: const Icon(Icons.edit),
                                   onPressed: () => _editCourse(doc),

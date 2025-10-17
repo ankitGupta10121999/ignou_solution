@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
-import 'package:ignousolutionhub/auth/wrapper.dart';
 import 'package:ignousolutionhub/core/locator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ignousolutionhub/core/firebase_options.dart';
+import 'package:ignousolutionhub/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,8 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
+        return MaterialApp.router(
+          routerConfig: AppRouter.router,
           title: 'IGNOUE Solution Hub',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -87,7 +88,6 @@ class MyApp extends StatelessWidget {
               hintStyle: GoogleFonts.roboto(color: Colors.grey.shade500),
             ),
           ),
-          home: const Wrapper(),
         );
       },
     );

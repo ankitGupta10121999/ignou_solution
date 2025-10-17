@@ -18,14 +18,11 @@ class StudentAppLayout extends StatefulWidget {
 
 class _StudentAppLayoutState extends State<StudentAppLayout> {
   int _selectedIndex = 0;
-  bool _isSidebarCollapsed = false;
 
   final List<Widget> _pages = [
     const HomePage(),
     const StudyMaterialPage(),
-    // const BooksPage(),
     const SolvedAssignmentsPage(),
-    // const QuestionPapersPage(),
     const ContactPage(),
   ];
 
@@ -261,6 +258,8 @@ class _DesktopScaffold extends StatefulWidget {
 
 class _DesktopScaffoldState extends State<_DesktopScaffold> {
   bool _isSidebarCollapsed = false;
+  int _hoveredIndex = -1;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -356,26 +355,72 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
             isCollapsed,
           ),
           const Spacer(),
-          const ProfileCardWidget(), // Use the new ProfileCardWidget
+          ProfileCardWidget(isCollapsed: _isSidebarCollapsed),
         ],
       ),
     );
   }
 
   Widget _buildSidebarItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    int index,
-    bool isCollapsed,
-  ) {
-    return ListTile(
-      leading: Icon(icon),
-      title: isCollapsed ? null : Text(title),
-      selected: widget.selectedIndex == index,
-      onTap: () {
-        widget.onItemSelected(index);
-      },
+      BuildContext context,
+      IconData icon,
+      String label,
+      int index,
+      bool isCollapsed,
+      ) {
+    bool isSelected = _selectedIndex == index;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hoveredIndex = index),
+      onExit: (_) => setState(() => _hoveredIndex = -1),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+              : (_hoveredIndex == index
+              ? Theme.of(context).primaryColor.withOpacity(0.08)
+              : Colors.transparent),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          minLeadingWidth: 24,
+          leading: Icon(
+            icon,
+            size: 22,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : (_hoveredIndex == index
+                ? Theme.of(context).primaryColor
+                : Colors.grey.shade700),
+          ),
+          title: isCollapsed
+              ? null
+              : Text(
+            label,
+            style: TextStyle(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : (_hoveredIndex == index
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey.shade700),
+              fontWeight: isSelected
+                  ? FontWeight.w600
+                  : FontWeight.w400,
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              _selectedIndex = index;
+            });
+            widget.onItemSelected(index);
+          },
+        ),
+      ),
     );
   }
 }
