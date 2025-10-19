@@ -119,21 +119,6 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
     );
   }
 
-  // Widget _buildDrawerItem(BuildContext context,
-  //     IconData icon,
-  //     String title,
-  //     int index,) {
-  //   return ListTile(
-  //     leading: Icon(icon),
-  //     title: Text(title),
-  //     selected: widget.selectedIndex == index,
-  //     onTap: () {
-  //       widget.onItemSelected(index);
-  //       Navigator.pop(context); // Close drawer
-  //     },
-  //   );
-  // }
-
   Widget _buildDrawerItem(
     BuildContext context,
     IconData icon,
@@ -183,7 +168,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
 }
 
 // Tablet Scaffold with fixed sidebar
-class _TabletScaffold extends StatefulWidget {
+class _TabletScaffold extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemSelected;
   final List<Widget> pages;
@@ -195,18 +180,13 @@ class _TabletScaffold extends StatefulWidget {
   });
 
   @override
-  State<_TabletScaffold> createState() => _TabletScaffoldState();
-}
-
-class _TabletScaffoldState extends State<_TabletScaffold> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('IGNOUE SOLUTION HUB')),
       body: Row(
         children: [
-          _buildSidebar(context), // Fixed sidebar
-          Expanded(child: widget.pages[widget.selectedIndex]),
+          _buildSidebar(context),
+          Expanded(child: pages[selectedIndex]),
         ],
       ),
     );
@@ -249,27 +229,9 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
     );
   }
 
-  // Widget _buildSidebarItem(BuildContext context,
-  //     IconData icon,
-  //     String title,
-  //     int index,) {
-  //   return ListTile(
-  //     leading: Icon(icon),
-  //     title: Text(title),
-  //     selected: widget.selectedIndex == index,
-  //     onTap: () {
-  //       widget.onItemSelected(index);
-  //     },
-  //   );
-  // }
   Widget _buildSidebarItem(
-    BuildContext context,
-    IconData icon,
-    String title,
-    int index, [
-    bool isCollapsed = false,
-  ]) {
-    bool isSelected = widget.selectedIndex == index;
+      BuildContext context, IconData icon, String title, int index) {
+    bool isSelected = selectedIndex == index;
     bool isHovered = false;
     return StatefulBuilder(
       builder: (context, setInnerState) {
@@ -289,23 +251,16 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
                     ? Theme.of(context).primaryColor
                     : Colors.black87,
               ),
-              title: isCollapsed
-                  ? null
-                  : Text(
-                      title,
-                      style: TextStyle(
-                        color: isSelected
-                            ? Theme.of(context).primaryColor
-                            : Colors.black87,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-              selected: isSelected,
-              onTap: () {
-                widget.onItemSelected(index);
-              },
+              title: Text(
+                title,
+                style: TextStyle(
+                  color: isSelected
+                      ? Theme.of(context).primaryColor
+                      : Colors.black87,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              onTap: () => onItemSelected(index),
             ),
           ),
         );
@@ -313,6 +268,7 @@ class _TabletScaffoldState extends State<_TabletScaffold> {
     );
   }
 }
+
 
 class _DesktopScaffold extends StatefulWidget {
   final int selectedIndex;
@@ -332,7 +288,6 @@ class _DesktopScaffold extends StatefulWidget {
 class _DesktopScaffoldState extends State<_DesktopScaffold> {
   bool _isSidebarCollapsed = false;
   int _hoveredIndex = -1;
-  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -350,16 +305,16 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
       ),
       body: Row(
         children: [
-          _buildSidebar(context, isCollapsed: _isSidebarCollapsed),
+          _buildSidebar(context),
           Expanded(child: widget.pages[widget.selectedIndex]),
         ],
       ),
     );
   }
 
-  Widget _buildSidebar(BuildContext context, {required bool isCollapsed}) {
+  Widget _buildSidebar(BuildContext context) {
     return Container(
-      width: isCollapsed ? 70 : 250,
+      width: _isSidebarCollapsed ? 70 : 250,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -374,31 +329,22 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: isCollapsed
-                ? Icon(
-                    Icons.school,
-                    color: Theme.of(context).primaryColor,
-                    size: 30,
-                  )
+            child: _isSidebarCollapsed
+                ? Icon(Icons.school,
+                color: Theme.of(context).primaryColor, size: 30)
                 : Text(
-                    'IGNOUE SOLUTION HUB',
-                    style: GoogleFonts.roboto(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+              'IGNOUE SOLUTION HUB',
+              style: GoogleFonts.roboto(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
           ),
           const Divider(),
-          _buildSidebarItem(context, Icons.group, 'Users', 0, isCollapsed),
-          _buildSidebarItem(context, Icons.school, 'Courses', 1, isCollapsed),
-          _buildSidebarItem(
-            context,
-            Icons.menu_book,
-            'Subjects',
-            2,
-            isCollapsed,
-          ),
+          _buildSidebarItem(Icons.group, 'Users', 0),
+          _buildSidebarItem(Icons.school, 'Courses', 1),
+          _buildSidebarItem(Icons.menu_book, 'Subjects', 2),
           const Spacer(),
           ProfileCardWidget(isCollapsed: _isSidebarCollapsed),
         ],
@@ -406,15 +352,8 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
     );
   }
 
-  Widget _buildSidebarItem(
-    BuildContext context,
-    IconData icon,
-    String label,
-    int index,
-    bool isCollapsed,
-  ) {
-    bool isSelected = _selectedIndex == index;
-
+  Widget _buildSidebarItem(IconData icon, String label, int index) {
+    bool isSelected = widget.selectedIndex == index;
     return MouseRegion(
       onEnter: (_) => setState(() => _hoveredIndex = index),
       onExit: (_) => setState(() => _hoveredIndex = -1),
@@ -426,8 +365,8 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           color: isSelected
               ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
               : (_hoveredIndex == index
-                    ? Theme.of(context).primaryColor.withOpacity(0.08)
-                    : Colors.transparent),
+              ? Theme.of(context).primaryColor.withOpacity(0.08)
+              : Colors.transparent),
           borderRadius: BorderRadius.circular(10),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -440,32 +379,26 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
             color: isSelected
                 ? Theme.of(context).colorScheme.primary
                 : (_hoveredIndex == index
-                      ? Theme.of(context).primaryColor
-                      : Colors.grey.shade700),
+                ? Theme.of(context).primaryColor
+                : Colors.grey.shade700),
           ),
-          title: isCollapsed
+          title: _isSidebarCollapsed
               ? null
               : Text(
-                label,
-                style: TextStyle(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : (_hoveredIndex == index
-                            ? Theme.of(context).primaryColor
-                            : Colors.grey.shade700),
-                  fontWeight: isSelected
-                      ? FontWeight.w600
-                      : FontWeight.w400,
-                ),
-              ),
-          onTap: () {
-            setState(() {
-              _selectedIndex = index;
-            });
-            widget.onItemSelected(index);
-          },
+            label,
+            style: TextStyle(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : (_hoveredIndex == index
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey.shade700),
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
+          onTap: () => widget.onItemSelected(index),
         ),
       ),
     );
   }
 }
+

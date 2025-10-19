@@ -1,13 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
-import 'package:ignousolutionhub/core/firestore_service.dart';
 import 'package:ignousolutionhub/core/locator.dart';
+import 'package:ignousolutionhub/service/firestore_course_service.dart';
 
+import '../constants/firebase_collections.dart';
+import '../constants/role_constants.dart';
+import '../models/course_model.dart';
+import '../models/user_model.dart';
 import '../routing/app_router.dart';
-import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -26,9 +31,10 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
   String? _errorMessage;
-
+  CourseModel? _selectedCourse;
   final AuthService _authService = locator<AuthService>();
-  final FirestoreService _firestoreService = locator<FirestoreService>();
+  final FirestoreCourseService _courseService =
+      locator<FirestoreCourseService>();
 
   @override
   void dispose() {
@@ -46,10 +52,24 @@ class _SignupScreenState extends State<SignupScreen> {
         _errorMessage = null;
       });
       try {
-        await _authService.signUpWithEmailAndPassword(
-          _emailController.text,
-          _passwordController.text,
-        );
+        UserCredential? userCredential = await _authService
+            .signUpWithEmailAndPassword(
+              _emailController.text,
+              _passwordController.text,
+            );
+        User? user = userCredential?.user;
+        if (user != null) {
+          UserModel userModel = UserModel(
+            uid: user.uid,
+            email: user.email!,
+            role: RoleConstants.student,
+            courseId: _selectedCourse!.id,
+          );
+          await FirebaseFirestore.instance
+              .collection(FirebaseCollections.users)
+              .doc(user.uid)
+              .set(userModel.toMap());
+        }
         if (mounted) {
           // No explicit navigation needed, Wrapper will react to auth state changes
         } else {
@@ -57,10 +77,6 @@ class _SignupScreenState extends State<SignupScreen> {
             _errorMessage = 'Signup failed. Please try again.';
           });
         }
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (_) => const Wrapper()),
-        // );
       } on FirebaseAuthException catch (e) {
         setState(() {
           _errorMessage = e.message;
@@ -118,6 +134,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             textAlign: TextAlign.center,
                           ),
                         ),
+                      const SizedBox(height: 20),
                       TextFormField(
                         controller: _fullNameController,
                         decoration: InputDecoration(
@@ -222,6 +239,71 @@ class _SignupScreenState extends State<SignupScreen> {
                           return null;
                         },
                       ),
+                      const SizedBox(height: 20),
+                      StreamBuilder<List<CourseModel>>(
+                        stream: _courseService.getCourseList(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Text('Error loading courses');
+                          }
+
+                          List<CourseModel> courses = snapshot.data ?? [];
+                          return DropdownSearch<CourseModel>(
+                            popupProps: PopupProps.menu(
+                              showSearchBox: true,
+                              fit: FlexFit.loose,
+                              constraints: BoxConstraints(
+                                maxHeight: courses.isEmpty ? 150 : 300,
+                              ),
+                              emptyBuilder: (context, searchEntry) {
+                                return Container(
+                                  height: 80,
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    'No course found',
+                                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              },
+                              searchFieldProps: const TextFieldProps(
+                                decoration: InputDecoration(
+                                  hintText: 'Search course...',
+                                  prefixIcon: Icon(Icons.search),
+                                ),
+                              ),
+                            ),
+                            items: (f, cs) => courses,
+                            compareFn: (CourseModel? a, CourseModel? b) =>
+                                a?.id == b?.id,
+                            selectedItem: _selectedCourse,
+                            itemAsString: (CourseModel c) => c.name,
+                            decoratorProps: DropDownDecoratorProps(
+                              decoration: InputDecoration(
+                                labelText: 'Select Course',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                prefixIcon: const Icon(Icons.book),
+                              ),
+                            ),
+                            validator: (value) =>
+                                value == null ? 'Please select a course' : null,
+                            onChanged: (value) {
+                              _selectedCourse = value;
+                            },
+                          );
+                        },
+                      ),
+
                       const SizedBox(height: 30),
                       SizedBox(
                         width: double.infinity,

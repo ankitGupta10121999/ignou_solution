@@ -2,6 +2,7 @@ class UserModel {
   final String uid;
   final String email;
   final String role;
+  final String? courseId;
   final String? name;
   final String? phone;
   final String? address;
@@ -14,6 +15,7 @@ class UserModel {
     required this.uid,
     required this.email,
     required this.role,
+     this.courseId,
     this.name,
     this.phone,
     this.address,
@@ -28,6 +30,7 @@ class UserModel {
       uid: data['uid'] as String,
       email: data['email'] as String,
       role: data['role'] as String,
+      courseId: data['courseId'] as String?,
       name: data['name'] as String?,
       phone: data['phone'] as String?,
       address: data['address'] as String?,

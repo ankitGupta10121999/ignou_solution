@@ -18,18 +18,6 @@ class AuthService {
     try {
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-      User? user = userCredential.user;
-      if (user != null) {
-        UserModel userModel = UserModel(
-          uid: user.uid,
-          email: user.email!,
-          role: RoleConstants.student,
-        );
-        await FirebaseFirestore.instance
-            .collection(FirebaseCollections.users)
-            .doc(user.uid)
-            .set(userModel.toMap());
-      }
       return userCredential;
     } on FirebaseAuthException catch (e) {
       print(e.message);
