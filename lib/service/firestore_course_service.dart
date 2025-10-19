@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/course_model.dart';
 import '../utils/commmon_utils.dart';
 
 class FirestoreCourseService {
@@ -87,4 +88,18 @@ class FirestoreCourseService {
         .orderBy('createdAt', descending: true)
         .snapshots();
   }
+
+
+  Stream<List<CourseModel>> getCourseList() {
+    return _firestore
+        .collection('courses')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return CourseModel.fromMap(doc.data());
+      }).toList();
+    });
+  }
+
 }
