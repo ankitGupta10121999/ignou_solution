@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../features/admin/courses_page.dart';
-import '../features/admin/subjects_page.dart';
-import '../features/admin/user_page.dart';
+import '../constants/appRouter_constants.dart';
 import '../features/user/profile_card_widget.dart';
 import '../responsive/responsive_layout.dart';
 
 class AdminAppLayout extends StatefulWidget {
-  const AdminAppLayout({super.key});
+  final Widget child;
+  final int index;
+
+  const AdminAppLayout({super.key, required this.child, required this.index});
 
   @override
   State<AdminAppLayout> createState() => _AdminAppLayoutState();
@@ -17,46 +19,51 @@ class AdminAppLayout extends StatefulWidget {
 class _AdminAppLayoutState extends State<AdminAppLayout> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [UsersPage(), CoursesPage(), SubjectsPage()];
+  final List<String> _pages = [
+    RouterConstant.adminUsers,
+    RouterConstant.adminCourses,
+    RouterConstant.adminSubjects,
+  ];
 
   void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    context.go(_pages[index]);
   }
 
   @override
   Widget build(BuildContext context) {
+    _selectedIndex = widget.index;
     return ResponsiveLayout(
       mobile: _MobileScaffold(
         selectedIndex: _selectedIndex,
         onItemSelected: _onItemSelected,
-        pages: _pages,
+        child: widget.child,
       ),
       tablet: _TabletScaffold(
         selectedIndex: _selectedIndex,
         onItemSelected: _onItemSelected,
-        pages: _pages,
+        child: widget.child,
       ),
       web: _DesktopScaffold(
         selectedIndex: _selectedIndex,
         onItemSelected: _onItemSelected,
-        pages: _pages,
+        child: widget.child,
       ),
     );
   }
 }
 
-// Mobile Scaffold with Drawer
 class _MobileScaffold extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onItemSelected;
-  final List<Widget> pages;
+  final Widget child;
 
   const _MobileScaffold({
     required this.selectedIndex,
     required this.onItemSelected,
-    required this.pages,
+    required this.child,
   });
 
   @override
@@ -69,7 +76,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
     return Scaffold(
       appBar: AppBar(title: const Text('IGNOUE SOLUTION HUB')),
       drawer: _buildDrawer(context),
-      body: widget.pages[widget.selectedIndex],
+      body: widget.child,
     );
   }
 
@@ -171,12 +178,12 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
 class _TabletScaffold extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemSelected;
-  final List<Widget> pages;
+  final Widget child;
 
   const _TabletScaffold({
     required this.selectedIndex,
     required this.onItemSelected,
-    required this.pages,
+    required this.child,
   });
 
   @override
@@ -186,7 +193,7 @@ class _TabletScaffold extends StatelessWidget {
       body: Row(
         children: [
           _buildSidebar(context),
-          Expanded(child: pages[selectedIndex]),
+          Expanded(child: child),
         ],
       ),
     );
@@ -230,7 +237,11 @@ class _TabletScaffold extends StatelessWidget {
   }
 
   Widget _buildSidebarItem(
-      BuildContext context, IconData icon, String title, int index) {
+    BuildContext context,
+    IconData icon,
+    String title,
+    int index,
+  ) {
     bool isSelected = selectedIndex == index;
     bool isHovered = false;
     return StatefulBuilder(
@@ -269,16 +280,15 @@ class _TabletScaffold extends StatelessWidget {
   }
 }
 
-
 class _DesktopScaffold extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onItemSelected;
-  final List<Widget> pages;
+  final Widget child;
 
   const _DesktopScaffold({
     required this.selectedIndex,
     required this.onItemSelected,
-    required this.pages,
+    required this.child,
   });
 
   @override
@@ -306,7 +316,7 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
       body: Row(
         children: [
           _buildSidebar(context),
-          Expanded(child: widget.pages[widget.selectedIndex]),
+          Expanded(child: widget.child),
         ],
       ),
     );
@@ -330,16 +340,19 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: _isSidebarCollapsed
-                ? Icon(Icons.school,
-                color: Theme.of(context).primaryColor, size: 30)
+                ? Icon(
+                    Icons.school,
+                    color: Theme.of(context).primaryColor,
+                    size: 30,
+                  )
                 : Text(
-              'IGNOUE SOLUTION HUB',
-              style: GoogleFonts.roboto(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
+                    'IGNOUE SOLUTION HUB',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
           ),
           const Divider(),
           _buildSidebarItem(Icons.group, 'Users', 0),
@@ -365,8 +378,8 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           color: isSelected
               ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
               : (_hoveredIndex == index
-              ? Theme.of(context).primaryColor.withOpacity(0.08)
-              : Colors.transparent),
+                    ? Theme.of(context).primaryColor.withOpacity(0.08)
+                    : Colors.transparent),
           borderRadius: BorderRadius.circular(10),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -379,26 +392,25 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
             color: isSelected
                 ? Theme.of(context).colorScheme.primary
                 : (_hoveredIndex == index
-                ? Theme.of(context).primaryColor
-                : Colors.grey.shade700),
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey.shade700),
           ),
           title: _isSidebarCollapsed
               ? null
               : Text(
-            label,
-            style: TextStyle(
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : (_hoveredIndex == index
-                  ? Theme.of(context).primaryColor
-                  : Colors.grey.shade700),
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
+                  label,
+                  style: TextStyle(
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : (_hoveredIndex == index
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey.shade700),
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                ),
           onTap: () => widget.onItemSelected(index),
         ),
       ),
     );
   }
 }
-

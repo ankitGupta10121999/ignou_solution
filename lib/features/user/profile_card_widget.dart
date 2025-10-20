@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 import 'package:ignousolutionhub/routing/app_router.dart';
 
 import '../../constants/firebase_collections.dart';
@@ -63,7 +64,7 @@ class _ProfileCardWidgetState extends State<ProfileCardWidget> {
     return Card(
       child: InkWell(
         onTap: () {
-          GoRouter.of(context).go(AppRouter.profile);
+          GoRouter.of(context).go(RouterConstant.profile);
         },
         child: Padding(
           padding: EdgeInsets.all(widget.isCollapsed ? 4.0 : 12.0),

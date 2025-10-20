@@ -15,7 +15,6 @@ class UsersPage extends StatefulWidget {
 class _UsersPageState extends State<UsersPage> {
   final FirestoreService _firestoreService = FirestoreService();
 
-  // ----------------- ADD USER DIALOG -----------------
   void _addUserDialog() {
     String name = "";
     String email = "";
@@ -70,7 +69,6 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  // ----------------- EDIT USER DIALOG -----------------
   void _editUserDialog(Map<String, dynamic> user) {
     String name = user["name"];
     String email = user["email"];
@@ -121,7 +119,6 @@ class _UsersPageState extends State<UsersPage> {
     // TODO: hook firestore delete
   }
 
-  // ----------------- HELPER: TEXT FIELD -----------------
   Widget _buildTextField(String label, Function(String) onChanged,
       {String? initial, bool isPassword = false}) {
     return Padding(
@@ -135,7 +132,6 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  // ----------------- UI -----------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,6 +139,7 @@ class _UsersPageState extends State<UsersPage> {
         onPressed: _addUserDialog,
         icon: const Icon(Icons.add),
         label: const Text("Add User"),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: StreamBuilder<List<UserModel>>(
         stream: _firestoreService.getAllUsers(),
@@ -164,7 +161,6 @@ class _UsersPageState extends State<UsersPage> {
           return LayoutBuilder(
             builder: (context, constraints) {
               if (constraints.maxWidth > 800) {
-                // ----------- Web/Tablet → DataTable -----------
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   // padding: EdgeInsets.all(16),

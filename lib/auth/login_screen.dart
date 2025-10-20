@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/auth/login_controller.dart';
-import 'package:ignousolutionhub/routing/app_router.dart';
+import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -27,7 +27,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      // Call the signIn method on our controller
       await ref
           .read(loginControllerProvider.notifier)
           .signIn(_emailController.text, _passwordController.text);
@@ -36,7 +35,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Listen for errors and show a SnackBar
     ref.listen<LoginState>(loginControllerProvider, (previous, next) {
       if (next.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -48,7 +46,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     });
 
-    // Watch the provider for state changes
     final loginState = ref.watch(loginControllerProvider);
 
     return Scaffold(
@@ -224,8 +221,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _buildSignUpLink() {
     return TextButton(
       onPressed: () {
-        // Use go_router for navigation
-        context.go(AppRouter.signup);
+        context.go(RouterConstant.signup);
       },
       child: const Text.rich(
         TextSpan(
