@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 import 'package:ignousolutionhub/features/admin/subjects_page.dart';
 import '../../service/firestore_course_service.dart';
 
@@ -87,7 +89,8 @@ class _CoursesPageState extends State<CoursesPage> {
                     return GridView.builder(
                       padding: const EdgeInsets.all(16),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 380, // Each card’s max width
+                        maxCrossAxisExtent: 380,
+                        // Each card’s max width
                         mainAxisExtent: 100,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
@@ -113,12 +116,9 @@ class _CoursesPageState extends State<CoursesPage> {
                                   tooltip: 'View Subjects',
                                   icon: const Icon(Icons.menu_book_outlined),
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) =>
-                                            SubjectsPage(courseId: doc['id']),
-                                      ),
+                                    final courseId = doc['id'];
+                                    GoRouter.of(context).go(
+                                      '${RouterConstant.adminSubjects}/$courseId',
                                     );
                                   },
                                 ),

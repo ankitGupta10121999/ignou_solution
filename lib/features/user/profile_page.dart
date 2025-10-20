@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../constants/appRouter_constants.dart';
 import '../../constants/firebase_collections.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -339,11 +341,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
               if (shouldSignOut == true) {
                 await FirebaseAuth.instance.signOut();
-                if (mounted) {
-                  Navigator.of(
-                    context,
-                  ).pushNamedAndRemoveUntil('/', (route) => false);
-                }
               }
             },
           ),

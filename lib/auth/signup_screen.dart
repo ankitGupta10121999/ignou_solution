@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
+import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 import 'package:ignousolutionhub/core/locator.dart';
 import 'package:ignousolutionhub/service/firestore_course_service.dart';
 
@@ -12,7 +13,6 @@ import '../constants/firebase_collections.dart';
 import '../constants/role_constants.dart';
 import '../models/course_model.dart';
 import '../models/user_model.dart';
-import '../routing/app_router.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -71,7 +71,6 @@ class _SignupScreenState extends State<SignupScreen> {
               .set(userModel.toMap());
         }
         if (mounted) {
-          // No explicit navigation needed, Wrapper will react to auth state changes
         } else {
           setState(() {
             _errorMessage = 'Signup failed. Please try again.';
@@ -333,7 +332,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 20),
                       TextButton(
                         onPressed: () {
-                          GoRouter.of(context).go(AppRouter.login);
+                          GoRouter.of(context).go(RouterConstant.login);
                         },
                         child: Text(
                           'Already have an account? Login',

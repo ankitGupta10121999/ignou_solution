@@ -5,8 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
 import 'package:ignousolutionhub/auth/login_screen.dart';
 import 'package:ignousolutionhub/auth/signup_screen.dart';
+import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 import 'package:ignousolutionhub/constants/role_constants.dart';
 import 'package:ignousolutionhub/core/locator.dart';
+import 'package:ignousolutionhub/features/admin/courses_page.dart';
+import 'package:ignousolutionhub/features/admin/subjects_page.dart';
+import 'package:ignousolutionhub/features/admin/user_page.dart';
 import 'package:ignousolutionhub/features/user/contact_page.dart';
 import 'package:ignousolutionhub/features/user/profile_page.dart';
 import 'package:ignousolutionhub/features/user/solved_assignments_page.dart';
@@ -16,7 +20,6 @@ import 'package:ignousolutionhub/layout/main_app_layout.dart';
 
 import '../core/firestore_service.dart';
 
-/// Simple splash widget for loading state
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -26,7 +29,6 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
-/// Converts a stream to a [Listenable] for GoRouter refresh
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
@@ -43,24 +45,13 @@ class GoRouterRefreshStream extends ChangeNotifier {
 }
 
 class AppRouter {
-  static const String splash = '/';
-  static const String login = '/login';
-  static const String signup = '/signup';
-  static const String home = '/home';
-  static const String studyMaterial = '/study_material';
-  static const String solvedAssignments = '/solved_assignments';
-  static const String contact = '/contact';
-  static const String profile = '/profile';
-  static const String adminHome = '/admin_home';
-  static const String allUsers = '/all_users';
   static final AuthService _authService = locator<AuthService>();
-
   static final GoRouter router = GoRouter(
-    initialLocation: splash,
+    initialLocation: RouterConstant.splash,
     refreshListenable: GoRouterRefreshStream(_authService.authStateChanges),
     routes: [
       GoRoute(
-        path: splash,
+        path: RouterConstant.splash,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: Scaffold(body: Center(child: CircularProgressIndicator())),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -69,7 +60,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: login,
+        path: RouterConstant.login,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: LoginScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -78,7 +69,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: signup,
+        path: RouterConstant.signup,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: SignupScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -87,7 +78,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: home,
+        path: RouterConstant.home,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: StudentAppLayout(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -96,7 +87,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: studyMaterial,
+        path: RouterConstant.studyMaterial,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: StudyMaterialPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -105,7 +96,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: solvedAssignments,
+        path: RouterConstant.solvedAssignments,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: SolvedAssignmentsPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -114,7 +105,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: contact,
+        path: RouterConstant.contact,
         pageBuilder: (context, state) => CustomTransitionPage(
           child: ContactPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -123,7 +114,7 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: profile,
+        path: RouterConstant.profile,
         pageBuilder: (context, state) {
           return CustomTransitionPage(
             child: ProfilePage(),
@@ -134,35 +125,65 @@ class AppRouter {
           );
         },
       ),
-      GoRoute(
-        path: adminHome,
-        pageBuilder: (context, state) {
-          final authService = locator<AuthService>();
-          final currentUser = authService.getCurrentUser();
-          return CustomTransitionPage(
-            child: currentUser != null
-                ? AdminAppLayout()
-                : const Scaffold(
-                    body: Center(child: Text('User data missing')),
-                  ),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-          );
+
+      ShellRoute(
+        builder: (context, state, child) {
+          final location = state.matchedLocation;
+          int index = 0;
+          if (location.startsWith(RouterConstant.adminUsers)) {
+            index = 0;
+          } else if (location.startsWith(RouterConstant.adminCourses)) {
+            index = 1;
+          } else if (location.startsWith(RouterConstant.adminSubjects)) {
+            index = 2;
+          }
+          return AdminAppLayout(index: index, child: child);
         },
-      ),
-      GoRoute(
-        path: allUsers,
-        pageBuilder: (context, state) {
-          return CustomTransitionPage(
-            child: StudentAppLayout(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-                  return FadeTransition(opacity: animation, child: child);
-                },
-          );
-        },
+        routes: [
+          GoRoute(
+            path: RouterConstant.adminUsers,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: UsersPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+              );
+            },
+          ),
+          GoRoute(
+            path: RouterConstant.adminCourses,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: CoursesPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+              );
+            },
+          ),
+          GoRoute(
+            path: RouterConstant.adminSubjects,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: SubjectsPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+              );
+            },
+          ),
+          GoRoute(
+            path: '${RouterConstant.adminSubjects}/:courseId',
+            builder: (context, state) {
+              final courseId = state.pathParameters['courseId'];
+              return SubjectsPage(courseId: courseId);
+            },
+          ),
+        ],
       ),
     ],
     redirect: (context, state) {
@@ -170,33 +191,37 @@ class AppRouter {
       final currentUser = authService.getCurrentUser();
       final location = state.matchedLocation;
 
-      final isAuthRoute = (location == login || location == signup);
-      // Not logged in → go to login
+      final isAuthRoute =
+          (location == RouterConstant.login ||
+          location == RouterConstant.signup);
       if (currentUser == null && !isAuthRoute) {
-        return login;
+        return RouterConstant.login;
       }
 
-      // Logged in and on auth route → send to home/admin
       if (currentUser != null && isAuthRoute) {
         final firestore = locator<FirestoreService>();
         return firestore.getUserRole(currentUser.uid).then((role) {
-          final target = role == RoleConstants.admin ? adminHome : home;
+          final target = role == RoleConstants.admin
+              ? RouterConstant.adminHome + RouterConstant.allUsers
+              : RouterConstant.home;
           return target;
         });
       }
 
-      // On splash → check login state
-      if (location == splash) {
+      if (location == RouterConstant.splash) {
         if (currentUser != null) {
           final firestore = locator<FirestoreService>();
           firestore.getUserRole(currentUser.uid).then((role) {
-            final target = role != RoleConstants.admin ? home : adminHome;
+            final target = role != RoleConstants.admin
+                ? RouterConstant.home
+                : RouterConstant.adminHome + RouterConstant.allUsers;
             return target;
           });
         } else {
-          return login;
+          return RouterConstant.login;
         }
       }
+      return null;
     },
     errorBuilder: (context, state) => Scaffold(
       body: Center(
