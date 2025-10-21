@@ -26,66 +26,72 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp.router(
-          routerConfig: AppRouter.router,
-          title: 'IGNOUE Solution Hub',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primaryColor: const Color(0xFF002147),
-            colorScheme: ColorScheme.fromSwatch().copyWith(
-              // secondary: const Color(0xFF28a745),
-              primary: const Color(0xFF002147),
-            ),
-            scaffoldBackgroundColor: Colors.transparent,
-            appBarTheme: AppBarTheme(
-              backgroundColor: const Color(0xFF002147),
-              foregroundColor: Colors.white,
-              titleTextStyle: GoogleFonts.roboto(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+        return InteractiveViewer(
+          maxScale: 5.0,
+          minScale: 1.0,
+          panEnabled: true,
+          scaleEnabled: true,
+          child: MaterialApp.router(
+            routerConfig: AppRouter.router,
+            title: 'IGNOUE Solution Hub',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primaryColor: const Color(0xFF002147),
+              colorScheme: ColorScheme.fromSwatch().copyWith(
+                // secondary: const Color(0xFF28a745),
+                primary: const Color(0xFF002147),
               ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
+              scaffoldBackgroundColor: Colors.transparent,
+              appBarTheme: AppBarTheme(
                 backgroundColor: const Color(0xFF002147),
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 15,
-                ),
-                textStyle: GoogleFonts.roboto(
-                  fontSize: 16,
+                titleTextStyle: GoogleFonts.roboto(
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
-            ),
-            textTheme: GoogleFonts.robotoTextTheme(
-              Theme.of(context).textTheme,
-            ).apply(bodyColor: Colors.black87, displayColor: Colors.black87),
-            inputDecorationTheme: InputDecorationTheme(
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(
-                  color: Color(0xFF002147),
-                  width: 2.0,
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF002147),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 15,
+                  ),
+                  textStyle: GoogleFonts.roboto(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(color: Colors.grey.shade300),
+              textTheme: GoogleFonts.robotoTextTheme(
+                Theme.of(context).textTheme,
+              ).apply(bodyColor: Colors.black87, displayColor: Colors.black87),
+              inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF002147),
+                    width: 2.0,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                labelStyle: GoogleFonts.roboto(color: Colors.grey.shade700),
+                hintStyle: GoogleFonts.roboto(color: Colors.grey.shade500),
               ),
-              labelStyle: GoogleFonts.roboto(color: Colors.grey.shade700),
-              hintStyle: GoogleFonts.roboto(color: Colors.grey.shade500),
             ),
           ),
         );
