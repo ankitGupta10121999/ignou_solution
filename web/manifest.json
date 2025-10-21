@@ -1,11 +1,11 @@
 {
-    "name": "ignousolutionhub",
-    "short_name": "ignousolutionhub",
+    "name": "IgnoueSolutionHub",
+    "short_name": "IgnoueHub",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "IgnoueSolutionHub - Learn and manage your courses seamlessly.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -31,5 +31,7 @@
             "type": "image/png",
             "purpose": "maskable"
         }
-    ]
+    ],
+    "scope": "/",
+    "lang": "en-US"
 }
