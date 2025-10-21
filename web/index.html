@@ -1,57 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+    <base href="$FLUTTER_BASE_HREF"/>
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+    <meta name="description"
+          content="IGNOUE Solution Hub — Smart learning and course management web app built with Flutter."/>
+    <meta name="keywords" content="IGNOUE, Solution Hub, Flutter Web, Courses, Learning"/>
+    <meta name="author" content="IGNOUE Solution Hub"/>
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    <title>IGNOUE Solution Hub</title>
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="$FLUTTER_BASE_HREF">
+    <!-- Progressive Web App -->
+    <meta name="mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-title" content="IGNOUE Solution Hub"/>
+    <link rel="apple-touch-icon" href="icons/Icon-192.png"/>
+    <link rel="manifest" href="manifest.json"/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="ignousolutionhub">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyDrC1vf81IVxYPfgOgd-bfXVH5aPJUciZk",
+          authDomain: "ignoue-solution-point.firebaseapp.com",
+          projectId: "ignoue-solution-point",
+          storageBucket: "ignoue-solution-point.firebasestorage.app",
+          messagingSenderId: "595105775633",
+          appId: "1:595105775633:web:5b32c5f8d020857d22f1b0",
+          measurementId: "G-8B7M0HWHP1"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
 
-  <title>ignousolutionhub</title>
-  <link rel="manifest" href="manifest.json">
+    <!-- Smooth zoom transitions -->
+    <style>
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: #ffffff;
+          transition: transform 0.3s ease, scale 0.3s ease;
+          transform-origin: center center;
+        }
 
-  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrC1vf81IVxYPfgOgd-bfXVH5aPJUciZk"></script>
-  <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDrC1vf81IVxYPfgOgd-bfXVH5aPJUciZk",
-      authDomain: "ignoue-solution-point.firebaseapp.com",
-      projectId: "ignoue-solution-point",
-      storageBucket: "ignoue-solution-point.firebasestorage.app",
-      messagingSenderId: "595105775633",
-      appId: "1:595105775633:web:5b32c5f8d020857d22f1b0",
-      measurementId: "G-8B7M0HWHP1"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-  </script>
+        #flutter-container,
+        canvas,
+        #flt-glass-pane {
+          transform-origin: center center;
+          transition: transform 0.3s ease;
+          image-rendering: -webkit-optimize-contrast;
+        }
+
+        /* Optional loading indicator */
+        #loading {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          font-family: Arial, sans-serif;
+          color: #555;
+        }
+    </style>
 </head>
+
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+<div id="loading">Loading IGNOU Solution Hub...</div>
+<script src="flutter_bootstrap.js" async></script>
+
+<!-- Re-enable zoom after Flutter loads and smooth-scale on zoom -->
+<script>
+    window.addEventListener('load', () => {
+      // Hide loading text once Flutter app mounts
+      const loader = document.getElementById('loading');
+      if (loader) loader.style.display = 'none';
+
+      // Ensure zoom enabled
+      const meta = document.querySelector('meta[name="viewport"]');
+      if (meta) {
+        meta.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'
+        );
+      }
+
+      // Smooth zoom handler
+      let lastZoom = window.visualViewport?.scale || 1.0;
+      const root = document.getElementById('flt-glass-pane') || document.body;
+
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+          const newZoom = window.visualViewport.scale;
+          if (Math.abs(newZoom - lastZoom) > 0.01) {
+            root.style.transform = `scale(${newZoom})`;
+            root.style.transition = 'transform 0.3s ease';
+            lastZoom = newZoom;
+          }
+        });
+      }
+    });
+</script>
 </body>
 </html>
