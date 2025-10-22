@@ -350,12 +350,14 @@ class _SubjectsPageState extends State<SubjectsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.courseId == null ? 'All Subjects' : 'Subjects for Course',
+        appBar: AppBar(
+          title: Text(
+            widget.courseId == null ? 'Subjects' : 'Subjects for Course',
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          centerTitle: false,
+          backgroundColor: Colors.transparent,
         ),
-        backgroundColor: Colors.teal,
-      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isWide = constraints.maxWidth > 800;
