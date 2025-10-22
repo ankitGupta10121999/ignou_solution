@@ -8,7 +8,7 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> setPersistence() async {
-    await _auth.setPersistence(Persistence.SESSION);
+    await _auth.setPersistence(Persistence.LOCAL);
   }
 
   Future<UserCredential?> signUpWithEmailAndPassword(
