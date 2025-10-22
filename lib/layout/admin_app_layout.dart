@@ -118,6 +118,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
             ),
             _buildDrawerItem(context, Icons.group, 'Users', 0),
             _buildDrawerItem(context, Icons.school, 'Courses', 1),
+            _buildDrawerItem(context, Icons.menu_book, 'Subjects', 2),
             const Spacer(),
             const ProfileCardWidget(), // Use the new ProfileCardWidget
           ],
@@ -134,37 +135,44 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
   ) {
     bool isSelected = widget.selectedIndex == index;
     bool isHovered = false;
-
     return StatefulBuilder(
       builder: (context, setInnerState) {
         return MouseRegion(
           onEnter: (_) => setInnerState(() => isHovered = true),
           onExit: (_) => setInnerState(() => isHovered = false),
-          child: Container(
-            color: isSelected
-                ? Colors.green.shade100
-                : isHovered
-                ? Colors.grey.shade200
-                : Colors.transparent,
+          cursor: SystemMouseCursors.click,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              minLeadingWidth: 24,
               leading: Icon(
                 icon,
+                size: 22,
                 color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Colors.black87,
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey.shade700,
               ),
               title: Text(
                 title,
                 style: TextStyle(
                   color: isSelected
-                      ? Theme.of(context).primaryColor
-                      : Colors.black87,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey.shade700,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),
               onTap: () {
                 widget.onItemSelected(index);
-                Navigator.pop(context); // close drawer
+                Navigator.pop(context);
               },
             ),
           ),
@@ -249,26 +257,34 @@ class _TabletScaffold extends StatelessWidget {
         return MouseRegion(
           onEnter: (_) => setInnerState(() => isHovered = true),
           onExit: (_) => setInnerState(() => isHovered = false),
-          child: Container(
-            color: isSelected
-                ? Colors.green.shade100
-                : isHovered
-                ? Colors.grey.shade200
-                : Colors.transparent,
+          cursor: SystemMouseCursors.click,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              minLeadingWidth: 24,
               leading: Icon(
                 icon,
+                size: 22,
                 color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Colors.black87,
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey.shade700,
               ),
               title: Text(
                 title,
                 style: TextStyle(
                   color: isSelected
-                      ? Theme.of(context).primaryColor
-                      : Colors.black87,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey.shade700,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 ),
               ),
               onTap: () => onItemSelected(index),
