@@ -17,6 +17,7 @@ import 'package:ignousolutionhub/features/user/study_material_page.dart';
 import 'package:ignousolutionhub/layout/admin_app_layout.dart';
 import 'package:ignousolutionhub/layout/main_app_layout.dart';
 import '../core/firestore_service.dart';
+import '../features/error_page.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -56,7 +57,6 @@ class AppRouter {
     initialLocation: RouterConstant.splash,
     refreshListenable: GoRouterRefreshStream(_authService.authStateChanges),
     routes: [
-      /// Splash
       GoRoute(
         path: RouterConstant.splash,
         pageBuilder: (context, state) => CustomTransitionPage(
@@ -67,8 +67,6 @@ class AppRouter {
           reverseTransitionDuration: const Duration(milliseconds: 250),
         ),
       ),
-
-      /// Auth routes
       GoRoute(
         path: RouterConstant.login,
         pageBuilder: (context, state) => CustomTransitionPage(
@@ -89,8 +87,6 @@ class AppRouter {
           reverseTransitionDuration: const Duration(milliseconds: 250),
         ),
       ),
-
-      /// Student pages
       GoRoute(
         path: RouterConstant.home,
         pageBuilder: (context, state) => CustomTransitionPage(
@@ -211,10 +207,12 @@ class AppRouter {
       }
       return null;
     },
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Text('Error: ${state.error?.message ?? 'Page not found'}'),
-      ),
+    errorPageBuilder: (context, state) => CustomTransitionPage(
+      key: state.pageKey,
+      child: ErrorPage(message: state.error?.message),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
     ),
   );
 }
