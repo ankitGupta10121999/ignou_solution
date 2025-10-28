@@ -1,10 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ignousolutionhub/constants/appRouter_constants.dart';
+import 'package:ignousolutionhub/core/locator.dart';
+import 'package:ignousolutionhub/models/course_model.dart';
+import 'package:ignousolutionhub/service/programme_service.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../models/programme_model.dart';
 import '../../service/firestore_course_service.dart';
+import '../../utils/common_utils.dart';
 
 class CoursesPage extends StatefulWidget {
   const CoursesPage({super.key});
@@ -14,32 +19,83 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-  final FirestoreCourseService _service = FirestoreCourseService();
+  final _service = locator<FirestoreCourseService>();
+  final _programmeService = locator<ProgrammeService>();
   final TextEditingController _nameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  ProgrammeModel? selectedProgramme;
   String? _editingId;
 
   void _saveCourse() async {
-    final name = _nameController.text.trim();
-    if (name.isEmpty) return;
-
-    if (_editingId == null) {
-      await _service.createCourse(name);
-    } else {
-      await _service.updateCourse(_editingId!, name);
-      _editingId = null;
+    if (_formKey.currentState!.validate() && selectedProgramme != null) {
+      final name = _nameController.text.trim();
+      if (_editingId == null) {
+        await _service.createCourse(
+          CourseModel(
+            id: CommonUtils.generateUuid(),
+            name: name,
+            programId: selectedProgramme!.id,
+            createdAt: CommonUtils.getCurrentTimeMillis(),
+            updateAt: CommonUtils.getCurrentTimeMillis(),
+          ),
+        );
+      } else {
+        await _service.updateCourse(
+          _editingId!,
+          CourseModel(
+            id: _editingId!,
+            name: name,
+            programId: selectedProgramme!.id,
+            updateAt: CommonUtils.getCurrentTimeMillis()
+          ),
+        );
+        _editingId = null;
+      }
+      _nameController.clear();
+      selectedProgramme = null;
+    } else if (selectedProgramme == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select at least one programme')),
+      );
     }
-    _nameController.clear();
   }
 
-  void _editCourse(DocumentSnapshot doc) {
+  void _editCourse(CourseModel courseModel) async {
+    if (courseModel.programId != null && courseModel.programId!.isNotEmpty) {
+      final programme = _programmeService.getProgrammeById(
+        courseModel.programId!,
+      );
+      selectedProgramme = await programme.first;
+    } else {
+      selectedProgramme = null;
+    }
     setState(() {
-      _editingId = doc['id'];
-      _nameController.text = doc['name'];
+      _editingId = courseModel.id;
+      _nameController.text = courseModel.name;
     });
   }
 
   void _deleteCourse(String id) async {
-    await _service.deleteCourse(id);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Course'),
+        content: const Text('Are you sure you want to delete this course?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      await _service.deleteCourse(id);
+    }
   }
 
   @override
@@ -91,24 +147,24 @@ class _CoursesPageState extends State<CoursesPage> {
     final crossAxisCount = (screenWidth / maxCardWidth).floor().clamp(1, 4);
 
     final double cardHeight = screenWidth < 600 ? 140 : 200;
-    return StreamBuilder<QuerySnapshot>(
-      stream: _service.getCourses(),
+    return StreamBuilder<List<CourseModel>>(
+      stream: _service.getCourseList(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        final docs = snapshot.data!.docs;
+        final docs = snapshot.data!;
         return GridView.builder(
           padding: const EdgeInsets.all(32),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 24, // Increased spacing
-            mainAxisSpacing: 24, // Increased spacing
+            crossAxisSpacing: 24,
+            mainAxisSpacing: 24,
             mainAxisExtent: cardHeight,
           ),
           itemCount: docs.length,
           itemBuilder: (context, index) {
-            final doc = docs[index];
+            final CourseModel doc = docs[index];
             return Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -117,7 +173,7 @@ class _CoursesPageState extends State<CoursesPage> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
-                  final courseId = doc['id'];
+                  final courseId = doc.id;
                   GoRouter.of(
                     context,
                   ).go('${RouterConstant.adminSubjects}/$courseId');
@@ -129,7 +185,7 @@ class _CoursesPageState extends State<CoursesPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Text(
-                        doc['name'],
+                        doc.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -138,7 +194,7 @@ class _CoursesPageState extends State<CoursesPage> {
                         ),
                       ),
                       Text(
-                        'Created: ${DateTime.fromMillisecondsSinceEpoch(doc['createdAt'])}',
+                        'Created: ${DateTime.fromMillisecondsSinceEpoch(doc.createdAt!)}',
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -147,7 +203,7 @@ class _CoursesPageState extends State<CoursesPage> {
                             tooltip: 'View Subjects',
                             icon: const Icon(Icons.menu_book_outlined),
                             onPressed: () {
-                              final courseId = doc['id'];
+                              final courseId = doc.id;
                               GoRouter.of(
                                 context,
                               ).go('${RouterConstant.adminSubjects}/$courseId');
@@ -155,11 +211,12 @@ class _CoursesPageState extends State<CoursesPage> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.edit),
-                            onPressed: () => _editCourse(doc),
+                            onPressed: () =>
+                                _editCourse(doc),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
-                            onPressed: () => _deleteCourse(doc['id']),
+                            onPressed: () => _deleteCourse(doc.id),
                           ),
                         ],
                       ),
@@ -177,18 +234,68 @@ class _CoursesPageState extends State<CoursesPage> {
   Widget _formSection() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Course Name'),
-          ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: _saveCourse,
-            child: Text(_editingId == null ? 'Add Course' : 'Update Course'),
-          ),
-        ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Course Name'),
+              validator: (val) => val!.isEmpty ? 'Required' : null,
+            ),
+            const SizedBox(height: 12),
+            StreamBuilder<List<ProgrammeModel>>(
+              stream: _programmeService.getProgrammesStream(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                final programmes = snapshot.data ?? [];
+                return DropdownSearch<ProgrammeModel>(
+                  items: (f, cs) => programmes,
+                  compareFn: (a, b) => a.id == b.id,
+                  itemAsString: (programme) => programme.name,
+                  selectedItem: selectedProgramme,
+                  onChanged: (value) => selectedProgramme = value,
+                  popupProps: PopupPropsMultiSelection.menu(
+                    showSearchBox: true,
+                    constraints: const BoxConstraints(maxHeight: 300),
+                    emptyBuilder: (context, searchEntry) => Container(
+                      height: 80,
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'No programme found',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    searchFieldProps: const TextFieldProps(
+                      decoration: InputDecoration(
+                        hintText: 'Search programme...',
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                    ),
+                  ),
+                  decoratorProps: DropDownDecoratorProps(
+                    decoration: InputDecoration(
+                      labelText: 'Select Programme',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _saveCourse,
+              child: Text(_editingId == null ? 'Add Course' : 'Update Course'),
+            ),
+          ],
+        ),
       ),
     );
   }

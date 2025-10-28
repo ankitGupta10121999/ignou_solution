@@ -21,7 +21,9 @@ class _AdminAppLayoutState extends State<AdminAppLayout> {
 
   final List<String> _pages = [
     RouterConstant.adminUsers,
+    RouterConstant.adminProgramme,
     RouterConstant.adminCourses,
+    RouterConstant.adminDepartments,
     RouterConstant.adminSubjects,
   ];
 
@@ -117,8 +119,10 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
               ),
             ),
             _buildDrawerItem(context, Icons.group, 'Users', 0),
-            _buildDrawerItem(context, Icons.school, 'Courses', 1),
-            _buildDrawerItem(context, Icons.menu_book, 'Subjects', 2),
+            _buildDrawerItem(context, Icons.folder, 'Programmes', 1),
+            _buildDrawerItem(context, Icons.school, 'Courses', 2),
+            _buildDrawerItem(context, Icons.apartment, 'Departments', 3),
+            _buildDrawerItem(context, Icons.menu_book, 'Subjects', 4),
             const Spacer(),
             const ProfileCardWidget(), // Use the new ProfileCardWidget
           ],
@@ -134,19 +138,18 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
     int index,
   ) {
     bool isSelected = widget.selectedIndex == index;
-    bool isHovered = false;
     return StatefulBuilder(
       builder: (context, setInnerState) {
         return MouseRegion(
-          onEnter: (_) => setInnerState(() => isHovered = true),
-          onExit: (_) => setInnerState(() => isHovered = false),
           cursor: SystemMouseCursors.click,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             decoration: BoxDecoration(
               color: isSelected
-                  ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.15)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
@@ -235,8 +238,10 @@ class _TabletScaffold extends StatelessWidget {
           ),
           const Divider(),
           _buildSidebarItem(context, Icons.group, 'Users', 0),
-          _buildSidebarItem(context, Icons.school, 'Courses', 1),
-          _buildSidebarItem(context, Icons.menu_book, 'Subjects', 2),
+          _buildSidebarItem(context, Icons.folder, 'Programmes', 1),
+          _buildSidebarItem(context, Icons.school, 'Courses', 2),
+          _buildSidebarItem(context, Icons.apartment, 'Departments', 3),
+          _buildSidebarItem(context, Icons.menu_book, 'Subjects', 4),
           const Spacer(),
           const ProfileCardWidget(),
         ],
@@ -251,19 +256,18 @@ class _TabletScaffold extends StatelessWidget {
     int index,
   ) {
     bool isSelected = selectedIndex == index;
-    bool isHovered = false;
     return StatefulBuilder(
       builder: (context, setInnerState) {
         return MouseRegion(
-          onEnter: (_) => setInnerState(() => isHovered = true),
-          onExit: (_) => setInnerState(() => isHovered = false),
           cursor: SystemMouseCursors.click,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             decoration: BoxDecoration(
               color: isSelected
-                  ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.15)
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),
@@ -372,8 +376,10 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           ),
           const Divider(),
           _buildSidebarItem(Icons.group, 'Users', 0),
-          _buildSidebarItem(Icons.school, 'Courses', 1),
-          _buildSidebarItem(Icons.menu_book, 'Subjects', 2),
+          _buildSidebarItem(Icons.folder, 'Programmes', 1),
+          _buildSidebarItem(Icons.school, 'Courses', 2),
+          _buildSidebarItem(Icons.apartment, 'Departments', 3),
+          _buildSidebarItem(Icons.menu_book, 'Subjects', 4),
           const Spacer(),
           ProfileCardWidget(isCollapsed: _isSidebarCollapsed),
         ],
@@ -392,9 +398,11 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
           color: isSelected
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15)
               : (_hoveredIndex == index
-                    ? Theme.of(context).primaryColor.withOpacity(0.08)
+                    ? Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.08)
                     : Colors.transparent),
           borderRadius: BorderRadius.circular(10),
         ),

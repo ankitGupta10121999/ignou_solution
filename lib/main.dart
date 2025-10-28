@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
 import 'package:ignousolutionhub/core/locator.dart';
@@ -10,6 +12,7 @@ import 'package:ignousolutionhub/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  usePathUrlStrategy();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AuthService().setPersistence();
   setupLocator();
@@ -49,6 +52,11 @@ class MyApp extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                ),
+                systemOverlayStyle: const SystemUiOverlayStyle(
+                  statusBarColor: Color(0xFF002147),
+                  statusBarIconBrightness: Brightness.light,
+                  statusBarBrightness: Brightness.dark,
                 ),
               ),
               elevatedButtonTheme: ElevatedButtonThemeData(

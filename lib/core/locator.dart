@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:ignousolutionhub/auth/auth_service.dart';
 import 'package:ignousolutionhub/core/firestore_service.dart';
+import 'package:ignousolutionhub/service/department_service.dart';
+import 'package:ignousolutionhub/service/programme_service.dart';
 
 import '../service/firestore_course_service.dart';
 
@@ -10,4 +12,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => AuthService());
   locator.registerLazySingleton(() => FirestoreService());
   locator.registerLazySingleton(() => FirestoreCourseService());
+  locator.registerLazySingleton(() => ProgrammeService());
+  locator.registerLazySingleton(() => DepartmentService());
 }

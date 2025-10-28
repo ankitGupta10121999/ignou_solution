@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ignousolutionhub/constants/role_constants.dart';
 import 'package:ignousolutionhub/models/user_model.dart';
-import 'package:ignousolutionhub/utils/commmon_utils.dart';
+import 'package:ignousolutionhub/utils/common_utils.dart';
 import '../../core/firestore_service.dart';
 
 class UsersPage extends StatefulWidget {
@@ -135,6 +135,14 @@ class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Users',
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        ),
+        centerTitle: false,
+        backgroundColor: Colors.transparent,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addUserDialog,
         icon: const Icon(Icons.add),

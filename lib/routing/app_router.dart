@@ -8,6 +8,8 @@ import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 import 'package:ignousolutionhub/constants/role_constants.dart';
 import 'package:ignousolutionhub/core/locator.dart';
 import 'package:ignousolutionhub/features/admin/courses_page.dart';
+import 'package:ignousolutionhub/features/admin/departments_page.dart';
+import 'package:ignousolutionhub/features/admin/programmes_page.dart';
 import 'package:ignousolutionhub/features/admin/subjects_page.dart';
 import 'package:ignousolutionhub/features/admin/user_page.dart';
 import 'package:ignousolutionhub/features/user/contact_page.dart';
@@ -130,14 +132,15 @@ class AppRouter {
         ),
       ),
 
-      /// Admin Shell
       ShellRoute(
         builder: (context, state, child) {
           final location = state.matchedLocation;
           int index = 0;
           if (location.startsWith(RouterConstant.adminUsers)) index = 0;
-          if (location.startsWith(RouterConstant.adminCourses)) index = 1;
-          if (location.startsWith(RouterConstant.adminSubjects)) index = 2;
+          if (location.startsWith(RouterConstant.adminProgramme)) index = 1;
+          if (location.startsWith(RouterConstant.adminCourses)) index = 2;
+          if (location.startsWith(RouterConstant.adminDepartments)) index = 3;
+          if (location.startsWith(RouterConstant.adminSubjects)) index = 4;
           return AdminAppLayout(index: index, child: child);
         },
         routes: [
@@ -171,6 +174,26 @@ class AppRouter {
               final courseId = state.pathParameters['courseId'];
               return CustomTransitionPage(
                 child: SubjectsPage(courseId: courseId),
+                transitionsBuilder: fadeTransition,
+                key: state.pageKey,
+              );
+            },
+          ),
+          GoRoute(
+            path: RouterConstant.adminProgramme,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: ProgrammesPage(),
+                transitionsBuilder: fadeTransition,
+                key: state.pageKey,
+              );
+            },
+          ),
+          GoRoute(
+            path: RouterConstant.adminDepartments,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: DepartmentPage(),
                 transitionsBuilder: fadeTransition,
                 key: state.pageKey,
               );

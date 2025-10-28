@@ -1,30 +1,35 @@
-class SubjectModel {
+class DepartmentModel {
   final String id;
   final String name;
   final String code;
-  final List<String> courseIds;
+  final List<String>? courseIds;
+  final int createdAt;
 
-  SubjectModel({
+  DepartmentModel({
     required this.id,
     required this.name,
     required this.code,
-    required this.courseIds,
+    this.courseIds,
+    required this.createdAt
   });
 
-  factory SubjectModel.fromMap(Map<String, dynamic> map, String id) {
-    return SubjectModel(
+  factory DepartmentModel.fromMap(Map<String, dynamic> map, String id) {
+    return DepartmentModel(
       id: id,
       name: map['name'] ?? '',
       code: map['code'] ?? '',
       courseIds: List<String>.from(map['courseIds'] ?? []),
+      createdAt: map['createdAt']
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id' : id,
       'name': name,
       'code': code,
       'courseIds': courseIds,
+      'createdAt' : createdAt
     };
   }
 }
