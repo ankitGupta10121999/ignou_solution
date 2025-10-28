@@ -1,5 +1,3 @@
-
-
 import 'package:uuid/uuid.dart';
 
 class CommonUtils {
@@ -7,5 +5,9 @@ class CommonUtils {
 
   static String generateUuid() {
     return _uuid.v4();
+  }
+
+  static int getCurrentTimeMillis() {
+    return DateTime.now().millisecondsSinceEpoch;
   }
 }

@@ -12,9 +12,10 @@
     <meta name="keywords" content="IGNOUE, Solution Hub, Flutter Web, Courses, Learning"/>
     <meta name="author" content="IGNOUE Solution Hub"/>
 
+    <meta name="theme-color" content="#002147"/>
+    <meta name="msapplication-navbutton-color" content="#002147"/>
     <title>IGNOUE Solution Hub</title>
 
-    <!-- Progressive Web App -->
     <meta name="mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
@@ -24,13 +25,11 @@
     <link rel="icon" type="image/png" href="favicon.png"/>
 
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
 
     <script>
-        // Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyDrC1vf81IVxYPfgOgd-bfXVH5aPJUciZk",
           authDomain: "ignoue-solution-point.firebaseapp.com",
@@ -63,14 +62,16 @@
           image-rendering: -webkit-optimize-contrast;
         }
 
-        /* Optional loading indicator */
         #loading {
           display: flex;
           align-items: center;
           justify-content: center;
           height: 100vh;
           font-family: Arial, sans-serif;
-          color: #555;
+          color: #ffffff;
+          background-color: #002147;
+          font-size: 18px;
+          font-weight: 500;
         }
     </style>
 </head>
@@ -86,7 +87,6 @@
       const loader = document.getElementById('loading');
       if (loader) loader.style.display = 'none';
 
-      // Ensure zoom enabled
       const meta = document.querySelector('meta[name="viewport"]');
       if (meta) {
         meta.setAttribute(
@@ -95,7 +95,6 @@
         );
       }
 
-      // Smooth zoom handler
       let lastZoom = window.visualViewport?.scale || 1.0;
       const root = document.getElementById('flt-glass-pane') || document.body;
 
