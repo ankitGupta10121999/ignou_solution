@@ -13,11 +13,13 @@ class RouterConstant {
   static const String subject = '/subjects';
   static const String programme = '/programme';
   static const String departments = '/departments';
+  static const String assignments = '/assignments';
 
   static String adminUsers = adminHome + allUsers;
   static String adminCourses = adminHome + courses;
   static String adminSubjects = adminHome +subject;
   static String adminProgramme = adminHome + programme;
   static String adminDepartments = adminHome + departments;
+  static String adminAssignments = adminHome + assignments;
 
 }

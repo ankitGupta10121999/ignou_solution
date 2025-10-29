@@ -25,6 +25,7 @@ class _AdminAppLayoutState extends State<AdminAppLayout> {
     RouterConstant.adminCourses,
     RouterConstant.adminDepartments,
     RouterConstant.adminSubjects,
+    RouterConstant.adminAssignments,
   ];
 
   void _onItemSelected(int index) {
@@ -123,6 +124,7 @@ class _MobileScaffoldState extends State<_MobileScaffold> {
             _buildDrawerItem(context, Icons.school, 'Courses', 2),
             _buildDrawerItem(context, Icons.apartment, 'Departments', 3),
             _buildDrawerItem(context, Icons.menu_book, 'Subjects', 4),
+            _buildDrawerItem(context, Icons.assignment, 'Assignments', 5),
             const Spacer(),
             const ProfileCardWidget(), // Use the new ProfileCardWidget
           ],
@@ -242,6 +244,7 @@ class _TabletScaffold extends StatelessWidget {
           _buildSidebarItem(context, Icons.school, 'Courses', 2),
           _buildSidebarItem(context, Icons.apartment, 'Departments', 3),
           _buildSidebarItem(context, Icons.menu_book, 'Subjects', 4),
+          _buildSidebarItem(context, Icons.assignment, 'Assignments', 5),
           const Spacer(),
           const ProfileCardWidget(),
         ],
@@ -380,6 +383,7 @@ class _DesktopScaffoldState extends State<_DesktopScaffold> {
           _buildSidebarItem(Icons.school, 'Courses', 2),
           _buildSidebarItem(Icons.apartment, 'Departments', 3),
           _buildSidebarItem(Icons.menu_book, 'Subjects', 4),
+          _buildSidebarItem(Icons.assignment, 'Assignments', 5),
           const Spacer(),
           ProfileCardWidget(isCollapsed: _isSidebarCollapsed),
         ],

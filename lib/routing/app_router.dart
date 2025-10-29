@@ -7,6 +7,7 @@ import 'package:ignousolutionhub/auth/signup_screen.dart';
 import 'package:ignousolutionhub/constants/appRouter_constants.dart';
 import 'package:ignousolutionhub/constants/role_constants.dart';
 import 'package:ignousolutionhub/core/locator.dart';
+import 'package:ignousolutionhub/features/admin/assignment_management_page.dart';
 import 'package:ignousolutionhub/features/admin/courses_page.dart';
 import 'package:ignousolutionhub/features/admin/departments_page.dart';
 import 'package:ignousolutionhub/features/admin/programmes_page.dart';
@@ -141,6 +142,7 @@ class AppRouter {
           if (location.startsWith(RouterConstant.adminCourses)) index = 2;
           if (location.startsWith(RouterConstant.adminDepartments)) index = 3;
           if (location.startsWith(RouterConstant.adminSubjects)) index = 4;
+          if (location.startsWith(RouterConstant.adminAssignments)) index = 5;
           return AdminAppLayout(index: index, child: child);
         },
         routes: [
@@ -194,6 +196,16 @@ class AppRouter {
             pageBuilder: (context, state) {
               return CustomTransitionPage(
                 child: DepartmentPage(),
+                transitionsBuilder: fadeTransition,
+                key: state.pageKey,
+              );
+            },
+          ),
+          GoRoute(
+            path: RouterConstant.adminAssignments,
+            pageBuilder: (context, state) {
+              return CustomTransitionPage(
+                child: AssignmentManagementPage(),
                 transitionsBuilder: fadeTransition,
                 key: state.pageKey,
               );
